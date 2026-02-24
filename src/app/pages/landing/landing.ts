@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { RouterModule } from '@angular/router';
+import { CustomButtonComponent } from '../../components/custom-button/custom-button'; // 1. Importar clase
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [ButtonModule, RouterModule],
-  templateUrl: './landing.html',
-  styleUrl: './landing.css'
+  imports: [CustomButtonComponent], // 2. Inyectar componente
+  templateUrl: './landing.html'
 })
 export class LandingComponent {}
