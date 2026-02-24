@@ -1,0 +1,42 @@
+<div class="flex align-items-center justify-content-center min-h-screen bg-blue-50">
+  <div class="card p-5 shadow-8 border-round-2xl bg-white" style="width: 100%; max-width: 450px;">
+    
+    <div class="text-center mb-5">
+      <i class="pi pi-user-circle text-blue-600 text-6xl mb-3"></i>
+      <h2 class="text-blue-900 text-3xl font-bold mb-2">Iniciar Sesión</h2>
+      <span class="text-blue-700 font-medium">Ingresa a tu cuenta para continuar</span>
+    </div>
+
+    <div class="p-fluid">
+      
+      <div class="field mb-4">
+        <label class="block text-blue-900 font-semibold mb-2">Correo Electrónico</label>
+        <span class="p-input-icon-left">
+          <i class="pi pi-envelope text-blue-500"></i>
+          <input pInputText type="email" placeholder="ejemplo@correo.com" 
+                 class="w-full border-blue-200 focus:border-blue-500 surface-0 text-blue-900">
+        </span>
+      </div>
+
+      <div class="field mb-4">
+        <label class="block text-blue-900 font-semibold mb-2">Contraseña</label>
+        <span class="p-input-icon-left">
+          <i class="pi pi-lock text-blue-500"></i>
+          <input pInputText type="password" placeholder="********" 
+                 class="w-full border-blue-200 focus:border-blue-500 surface-0 text-blue-900">
+        </span>
+      </div>
+
+      <button pButton pRipple label="Ingresar" 
+              class="w-full py-3 text-xl font-bold bg-blue-600 border-none hover:bg-blue-700 transition-all duration-200">
+      </button>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a routerLink="/auth/register" class="text-blue-600 font-bold no-underline cursor-pointer hover:underline">
+        ¿No tienes cuenta? Regístrate aquí
+      </a>
+    </div>
+    
+  </div>
+</div>

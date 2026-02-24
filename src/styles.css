@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+/* 1. Iconos de PrimeNG (candados, sobres, etc.) */
+@import "primeicons/primeicons.css";
+
+/* 2. El sistema de diseño (para el centrado y el p-fluid) */
+@import "primeflex/primeflex.css";
+
+/* 3. Reset básico para que no queden espacios blancos raros */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #eff6ff; /* Un azul muy suave de fondo */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Asegura que la tarjeta sea blanca y el texto legible */
+.card {
+    background: #ffffff !important;
+    color: #1e293b !important; /* Un gris muy oscuro casi negro */
+}
+
+/* Fix para inputs que se ponen negros */
+.p-inputtext {
+    background-color: #ffffff !important;
+    color: #334155 !important;
+}
+
+/* Si los labels no se ven */
+label {
+    color: #1e293b !important;
+    font-weight: 600;
+}
