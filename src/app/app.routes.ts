@@ -1,23 +1,23 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 import { LandingComponent } from './pages/landing/landing';
 import { LoginComponent } from './pages/auth/login/login';
 import { RegisterComponent } from './pages/auth/register/register';
+import { MainLayoutComponent } from './layout/main-layout/main-layout';
+import { HomeComponent } from './pages/home/home';
 
 export const routes: Routes = [
-  // Página inicial (Login)
-  { path: '', component: LandingComponent }, 
-
-  // Agrupación de Autenticación
-  { 
-    path: 'auth', 
+  { path: '', redirectTo: 'landing', pathMatch: 'full' },
+  { path: 'landing', component: LandingComponent },
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent }
+      { path: 'home', component: HomeComponent },
     ]
   },
-
-  { path: 'landing', component: LandingComponent },
-
-  // Comodín para rutas no encontradas (404)
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'landing' }
 ];

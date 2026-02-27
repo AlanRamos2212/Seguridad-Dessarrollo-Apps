@@ -1,0 +1,12 @@
+/* Seleccionamos el botón de PrimeNG específicamente */
+:host ::ng-deep .p-button {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1100 !important; /* Por encima de las cards */
+    margin: 0 !important;
+    border-radius: 0 0 12px 0 !important; /* Solo redondea la esquina interna */
+    padding: 1rem !important;
+    height: 3rem;
+}
+

@@ -4,6 +4,7 @@
 /* 2. El sistema de diseño (para el centrado y el p-fluid) */
 @import "primeflex/primeflex.css";
 
+
 /* 3. Reset básico para que no queden espacios blancos raros */
 body {
     margin: 0;

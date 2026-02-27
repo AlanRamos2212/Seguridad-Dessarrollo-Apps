@@ -10,7 +10,7 @@ import Aura from '@primeng/themes/aura';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideAnimations(), // Proporciona animaciones de forma más ligera
+    provideAnimations(),
     providePrimeNG({ 
         theme: {
             preset: Aura // Esto define el look & feel de tus inputs y botones

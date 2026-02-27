@@ -1,0 +1,155 @@
+<div class="p-4 surface-ground min-h-screen">
+
+  <!-- HEADER -->
+  <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-5">
+    <div>
+      <h1 class="text-4xl font-bold text-900 mb-2">Bienvenido, Daniel 👋</h1>
+      <span class="text-600">Aquí tienes el resumen general del sistema</span>
+    </div>
+
+    <div class="flex gap-2 mt-3 md:mt-0">
+      <button pButton label="Nuevo Proyecto" icon="pi pi-plus" class="p-button-primary"></button>
+      <button pButton label="Generar Reporte" icon="pi pi-chart-line" class="p-button-outlined"></button>
+    </div>
+  </div>
+
+  <!-- TARJETAS KPI -->
+  <div class="grid mb-5">
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="p-4 border-round-2xl shadow-3 text-white"
+           style="background: linear-gradient(135deg,#4f46e5,#3b82f6);">
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <span class="block text-sm">Usuarios Activos</span>
+            <span class="text-4xl font-bold">128</span>
+            <div class="text-sm mt-2">+12% este mes</div>
+          </div>
+          <i class="pi pi-users text-5xl opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="p-4 border-round-2xl shadow-3 text-white"
+           style="background: linear-gradient(135deg,#10b981,#059669);">
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <span class="block text-sm">Proyectos</span>
+            <span class="text-4xl font-bold">34</span>
+            <div class="text-sm mt-2">5 nuevos</div>
+          </div>
+          <i class="pi pi-briefcase text-5xl opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="p-4 border-round-2xl shadow-3 text-white"
+           style="background: linear-gradient(135deg,#f59e0b,#f97316);">
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <span class="block text-sm">Tareas Pendientes</span>
+            <span class="text-4xl font-bold">3</span>
+            <div class="text-sm mt-2">76 totales</div>
+          </div>
+          <i class="pi pi-check-square text-5xl opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <div class="p-4 border-round-2xl shadow-3 text-white"
+           style="background: linear-gradient(135deg,#ef4444,#dc2626);">
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <span class="block text-sm">Reportes Generados</span>
+            <span class="text-4xl font-bold">12</span>
+            <div class="text-sm mt-2">Hoy actualizado</div>
+          </div>
+          <i class="pi pi-chart-bar text-5xl opacity-50"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="grid">
+
+    <!-- GRAFICA -->
+    <div class="col-12 lg:col-8">
+      <div class="card border-round-2xl shadow-2 p-4">
+        <h3 class="text-xl font-semibold mb-4">Estadísticas Mensuales</h3>
+        <p-chart type="line" [data]="chartData"></p-chart>
+      </div>
+    </div>
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <div class="col-12 lg:col-4">
+      <div class="card border-round-2xl shadow-2 p-4">
+        <h3 class="text-xl font-semibold mb-4">Actividad Reciente</h3>
+
+        <ul class="list-none p-0 m-0">
+          <li class="mb-3 flex align-items-center gap-2">
+            <i class="pi pi-user-plus text-green-500"></i>
+            <span>Nuevo usuario registrado</span>
+          </li>
+
+          <li class="mb-3 flex align-items-center gap-2">
+            <i class="pi pi-briefcase text-blue-500"></i>
+            <span>Proyecto actualizado</span>
+          </li>
+
+          <li class="mb-3 flex align-items-center gap-2">
+            <i class="pi pi-check text-orange-500"></i>
+            <span>Tarea completada</span>
+          </li>
+
+          <li class="flex align-items-center gap-2">
+            <i class="pi pi-chart-line text-purple-500"></i>
+            <span>Reporte generado</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLA PROYECTOS 
+  <div class="card border-round-2xl shadow-2 p-4 mt-5">
+    <h3 class="text-xl font-semibold mb-4">Proyectos Recientes</h3>
+
+    <p-table [value]="projects" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombre</th>
+          <th>Cliente</th>
+          <th>Estado</th>
+          <th>Progreso</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-project>
+        <tr>
+          <td>{{ project.name }}</td>
+          <td>{{ project.client }}</td>
+          <td>
+            <span class="px-2 py-1 border-round text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': project.status === 'Activo',
+                    'bg-yellow-100 text-yellow-700': project.status === 'Pendiente'
+                  }">
+              {{ project.status }}
+            </span>
+          </td>
+          <td>
+            <p-progressBar [value]="project.progress"></p-progressBar>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </div>-->
+
+</div>

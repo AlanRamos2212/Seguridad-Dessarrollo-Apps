@@ -76,7 +76,7 @@ onLogin() {
       summary: '¡Bienvenido!', 
       detail: `Hola ${savedUser?.nombre || 'Admin'}. Redirigiendo...` 
     });
-    setTimeout(() => this.router.navigate(['/landing']), 1500);
+    setTimeout(() => this.router.navigate(['/home']), 1500);
   } else {
     this.messageService.add({ 
       severity: 'error', 
