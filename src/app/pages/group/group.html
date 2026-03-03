@@ -1,0 +1,51 @@
+<div class="p-5">
+    <div class="mb-5">
+        <h1 class="text-3xl font-bold text-900">Gestión de Grupo</h1>
+        <p class="text-600">Visualiza el rendimiento y los miembros de tu equipo.</p>
+    </div>
+
+    <div class="grid">
+        <div class="col-12 md:col-4">
+            <p-card styleClass="shadow-2 border-left-3 border-blue-500 h-full">
+                <div class="flex justify-content-between align-items-center">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Total de Miembros (N)</span>
+                        <div class="text-900 font-bold text-4xl">{{ totalMiembros }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:3rem;height:3rem">
+                        <i class="pi pi-users text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p-tag value="+5 nuevos" severity="success" [rounded]="true"></p-tag>
+                    <span class="text-500 ml-2">desde ayer</span>
+                </div>
+            </p-card>
+        </div>
+
+        <div class="col-12 md:col-8">
+            <p-card [header]="nombreGrupo" subTitle="Actividad del grupo" styleClass="shadow-2 h-full">
+                <ng-template pTemplate="header">
+                    <img alt="Card Header Image" src="https://primefaces.org/cdn/primeng/images/usercard.png" class="w-full border-round-top" style="height: 150px; object-fit: cover;" />
+                </ng-template>
+                
+                <p class="m-0 leading-relaxed text-700">
+                    Este grupo está enfocado en la implementación de la Práctica 5. 
+                    Actualmente revisando la integración del Sidebar y las nuevas rutas de usuario.
+                </p>
+
+                <div class="flex align-items-center gap-3 mt-4">
+                    <p-button label="Ver Miembros" icon="pi pi-search" severity="info"></p-button>
+                    <p-button label="Configurar" icon="pi pi-cog" severity="secondary" [outlined]="true"></p-button>
+                </div>
+
+                <ng-template pTemplate="footer">
+                    <div class="flex align-items-center text-500 text-sm">
+                        <i class="pi pi-clock mr-2"></i>
+                        <span>Última actualización: {{ ultimaActividad }}</span>
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+    </div>
+</div>
