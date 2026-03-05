@@ -1,126 +1,181 @@
-<div class="p-5" [formGroup]="userForm" *ngIf="userData; else noData">
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="page-container" *ngIf="userData; else noData">
+    <!-- Profile Header -->
     <div class="mb-5 flex justify-content-between align-items-center">
         <div>
-            <h1 class="text-3xl font-bold text-900">Perfil de Usuario</h1>
-            <p class="text-600">Revisa y actualiza tu información personal.</p>
+            <h1 class="text-3xl font-bold text-900 border-left-4 border-emerald pl-3">Perfil de Usuario</h1>
+            <p class="text-600 ml-3">Centro de control para tu información de seguridad.</p>
         </div>
 
-        <p-button 
-            [label]="isEditing ? 'Cancelar' : 'Editar Perfil'" 
-            [icon]="isEditing ? 'pi pi-times' : 'pi pi-user-edit'" 
-            [severity]="isEditing ? 'danger' : 'info'"
-            (onClick)="toggleEdit()">
-        </p-button>
+        <div class="flex gap-2">
+            <p-button label="Borrar Perfil" icon="pi pi-sign-out" [text]="true" severity="danger"
+                (onClick)="confirmDelete()">
+            </p-button>
+            <p-button label="Editar Perfil" icon="pi pi-user-edit" styleClass="btn-emerald2"
+                (onClick)="openModal()">
+            </p-button>
+        </div>
     </div>
 
     <div class="grid justify-content-center">
-        <div class="col-12 md:col-8 lg:col-6">
-            <p-card styleClass="shadow-4 border-round-xl">
-                <div class="flex flex-column align-items-center text-center p-3">
-                    <p-avatar 
-                        [label]="userData.name ? userData.name[0].toUpperCase() : 'U'" 
-                        shape="circle" size="xlarge" 
-                        styleClass="bg-blue-100 text-blue-700 text-5xl mb-3 shadow-2"
-                        [style]="{width: '100px', height: '100px'}">
-                    </p-avatar>
-                    
-                    <div *ngIf="isEditing" class="flex gap-2 mb-2">
-                        <input pInputText formControlName="name" placeholder="Nombre" class="p-inputtext-sm w-full" />
-                        <input pInputText formControlName="lastname" placeholder="Apellido" class="p-inputtext-sm w-full" />
+        <div class="col-12 lg:col-10 xl:col-8">
+            <p-card styleClass="profile-card">
+                <div class="grid p-4">
+                    <!-- Avatar Section -->
+                    <div
+                        class="col-12 md:col-4 flex flex-column align-items-center justify-content-center border-right-1 border-100">
+                        <div class="avatar-wrapper mb-3">
+                            <p-avatar [label]="userData.name ? userData.name[0].toUpperCase() : 'U'" shape="circle"
+                                size="xlarge" styleClass="custom-avatar">
+                            </p-avatar>
+                            <div class="online-indicator"></div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-900 m-0 text-center">
+                            {{ userData.name }} {{ userData.lastname }}
+                        </h2>
+                        <p class="text-500 mt-1 mb-3 text-center">{{ userData.email }}</p>
+                        <p-tag value="Administrador" severity="success" icon="pi pi-shield" [rounded]="true"
+                            styleClass="emerald-tag"></p-tag>
                     </div>
-                    
-                    <h2 *ngIf="!isEditing" class="text-2xl font-bold text-900 m-0">
-                        {{ userData.name || 'Usuario' }} {{ userData.lastname || '' }}
-                    </h2>
-                    
-                    <p class="text-600 mt-1 mb-3">{{ userData.email }}</p>
-                    <p-tag value="Administrador" severity="success" icon="pi pi-check-circle" [rounded]="true"></p-tag>
-                </div>
 
-                <p-divider align="center">
-                    <span class="text-500 text-sm font-medium">Detalles de la Cuenta</span>
-                </p-divider>
+                    <!-- Info Details -->
+                    <div class="col-12 md:col-8 pl-4">
+                        <h3 class="text-xl font-semibold mb-4 text-800">Información General</h3>
 
-                <div class="p-3">
-                    <ul class="list-none p-0 m-0 text-700">
-                        
-                        <li class="flex align-items-center mb-3 py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-id-card mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">ID de Usuario</span>
-                                <span class="block text-900 font-semibold">{{ userData.id || 'N/A' }}</span>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="pi pi-id-card"></i>
+                                <div>
+                                    <label>ID de Usuario</label>
+                                    <span>{{ userData.id }}</span>
+                                </div>
                             </div>
-                        </li>
 
-                        <li class="flex align-items-center mb-3 py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-envelope mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">Correo Electrónico</span>
-                                <input *ngIf="isEditing" pInputText formControlName="email" class="w-full mt-1 p-inputtext-sm" />
-                                <span *ngIf="!isEditing" class="block text-900 font-semibold">{{ userData.email || 'N/A' }}</span>
+                            <div class="info-item">
+                                <i class="pi pi-envelope"></i>
+                                <div>
+                                    <label>Correo de Enlace</label>
+                                    <span>{{ userData.email }}</span>
+                                </div>
                             </div>
-                        </li>
 
-                        <li class="flex align-items-center mb-3 py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-calendar-plus mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">Miembro desde</span>
-                                <span class="block text-900 font-semibold">Enero 2024 (Simulado)</span>
+                            <div class="info-item">
+                                <i class="pi pi-map-marker"></i>
+                                <div>
+                                    <label>Ubicación / Dirección</label>
+                                    <span>{{ userData.direccion }}</span>
+                                </div>
                             </div>
-                        </li>
 
-                        <li class="flex align-items-center mb-3 py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-map-marker mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">Dirección</span>
-                                <input *ngIf="isEditing" pInputText formControlName="direccion" class="w-full mt-1 p-inputtext-sm" />
-                                <span *ngIf="!isEditing" class="block text-900 font-semibold">{{ userData.direccion || 'N/A' }}</span>
+                            <div class="info-item">
+                                <i class="pi pi-phone"></i>
+                                <div>
+                                    <label>Contacto Telefónico</label>
+                                    <span>{{ userData.telefono }}</span>
+                                </div>
                             </div>
-                        </li>
 
-                        <li class="flex align-items-center mb-3 py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-phone mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">Teléfono</span>
-                                <input *ngIf="isEditing" pInputText formControlName="telefono" class="w-full mt-1 p-inputtext-sm" />
-                                <span *ngIf="!isEditing" class="block text-900 font-semibold">{{ userData.telefono || 'N/A' }}</span>
+                            <div class="info-item">
+                                <i class="pi pi-calendar"></i>
+                                <div>
+                                    <label>Fecha de Nacimiento</label>
+                                    <span>{{ userData.fechaNacimiento }}</span>
+                                </div>
                             </div>
-                        </li>
 
-                        <li class="flex align-items-center py-2 px-3 surface-100 border-round">
-                            <i class="pi pi-calendar mr-3 text-xl text-blue-500"></i>
-                            <div class="w-full">
-                                <span class="block text-sm text-600 font-medium">Fecha de Nacimiento</span>
-                                <input *ngIf="isEditing" pInputText formControlName="fechaNacimiento" class="w-full mt-1 p-inputtext-sm" />
-                                <span *ngIf="!isEditing" class="block text-900 font-semibold">{{ userData.fechaNacimiento || 'N/A' }}</span>
+                            <div class="info-item">
+                                <i class="pi pi-history"></i>
+                                <div>
+                                    <label>Miembro desde</label>
+                                    <span>{{ userData.miembroDesde }}</span>
+                                </div>
                             </div>
-                        </li>
-
-                    </ul>
-                </div>
-
-                <ng-template pTemplate="footer">
-                    <div class="flex justify-content-end gap-2 p-2">
-                        <p-button *ngIf="!isEditing" label="Cambiar Contraseña" icon="pi pi-key" severity="secondary" [outlined]="true"></p-button>
-                        <p-button 
-                            *ngIf="isEditing" 
-                            label="Guardar Cambios" 
-                            icon="pi pi-save" 
-                            severity="success"
-                            [disabled]="userForm.invalid"
-                            (onClick)="saveChanges()">
-                        </p-button>
+                        </div>
                     </div>
-                </ng-template>
+                </div>
             </p-card>
         </div>
     </div>
 </div>
 
+<!-- Edit Modal (Emerald Theme) -->
+<p-dialog *ngIf="userForm" [(visible)]="displayModal" [modal]="true" [style]="{ width: '500px' }" [draggable]="false"
+    [resizable]="false" [closable]="false" styleClass="custom-modal emerald-modal">
+
+    <ng-template pTemplate="header">
+        <div class="modal-header">
+            <div class="header-icon-wrapper">
+                <i class="pi pi-user-edit header-icon"></i>
+            </div>
+            <div class="header-text">
+                <h2 class="m-0 text-xl font-bold">Actualizar Perfil</h2>
+                <p class="m-0 text-sm text-500">Asegura la integridad de tu información.</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="userForm" (ngSubmit)="saveChanges()" class="form-grid mt-2">
+
+        <div class="grid">
+            <div class="col-6">
+                <div class="input-wrapper">
+                    <label class="input-label">Nombre</label>
+                    <input pInputText formControlName="name" class="custom-input w-full" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-wrapper">
+                    <label class="input-label">Apellido</label>
+                    <input pInputText formControlName="lastname" class="custom-input w-full" />
+                </div>
+            </div>
+        </div>
+
+        <div class="input-wrapper">
+            <label class="input-label">Correo Electrónico</label>
+            <div class="p-input-icon-left w-full">
+                <i class="pi pi-envelope"></i>
+                <input pInputText formControlName="email" class="custom-input w-full" />
+            </div>
+        </div>
+
+        <div class="input-wrapper">
+            <label class="input-label">Dirección / Residencia</label>
+            <div class="p-input-icon-left w-full">
+                <i class="pi pi-map-marker"></i>
+                <input pInputText formControlName="direccion" class="custom-input w-full" />
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="col-6">
+                <div class="input-wrapper">
+                    <label class="input-label">Teléfono</label>
+                    <input pInputText formControlName="telefono" class="custom-input w-full" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-wrapper">
+                    <label class="input-label">Nacimiento</label>
+                    <input pInputText formControlName="fechaNacimiento" class="custom-input w-full" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer mt-4 pt-3">
+            <p-button label="Cancelar" [text]="true" severity="danger" (onClick)="closeModal()"></p-button>
+            <p-button label="Guardar Perfil" icon="pi pi-check" type="submit" [disabled]="userForm.invalid"
+                styleClass="btn-save"></p-button>
+        </div>
+    </form>
+</p-dialog>
+
 <ng-template #noData>
-    <div class="flex flex-column align-items-center justify-content-center text-center py-8 surface-section border-round shadow-1">
-        <i class="pi pi-user-slash text-6xl text-400 mb-4"></i>
-        <h3 class="text-xl font-bold text-700 m-0">No se encontraron datos de usuario</h3>
-        <p-button label="Ir al Login" icon="pi pi-sign-in" routerLink="/auth/login" class="mt-4"></p-button>
+    <div class="flex flex-column align-items-center justify-content-center h-screen">
+        <i class="pi pi-spin pi-spinner text-4xl text-primary mb-3"></i>
+        <p class="text-500">Cargando perfil...</p>
     </div>
 </ng-template>

@@ -33,14 +33,14 @@ import { InputIconModule } from 'primeng/inputicon';
   styleUrl: './login.css'
 })
 export class LoginComponent {
-  loginForm!: FormGroup; 
-  
+  loginForm!: FormGroup;
+
   // Credenciales para la práctica
-  private readonly USER_VALID = 'admin@correo.com';
+  private readonly USER_VALID = 'alan22@correo.com';
   private readonly PASS_VALID = '123456';
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private messageService: MessageService,
     private router: Router // Inyectamos el servicio de rutas
   ) {
@@ -54,35 +54,35 @@ export class LoginComponent {
     });
   }
 
-onLogin() {
-  if (this.loginForm.invalid) {
-    this.loginForm.markAllAsTouched();
-    return;
+  onLogin() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    const { email, password } = this.loginForm.value;
+
+    // 1. Intentamos obtener el usuario registrado en LocalStorage
+    const savedUserJson = localStorage.getItem('user_session');
+    const savedUser = savedUserJson ? JSON.parse(savedUserJson) : null;
+
+    // 2. Validamos contra LocalStorage O contra tus credenciales fijas
+    const esUsuarioRegistrado = savedUser && email === savedUser.email && password === savedUser.password;
+    const esAdminFijo = email === this.USER_VALID && password === this.PASS_VALID;
+
+    if (esUsuarioRegistrado || esAdminFijo) {
+      this.messageService.add({
+        severity: 'success',
+        summary: '¡Bienvenido!',
+        detail: `Hola ${savedUser?.nombre || 'Admin'}. Redirigiendo...`
+      });
+      setTimeout(() => this.router.navigate(['/home']), 1500);
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Acceso Denegado',
+        detail: 'Correo o contraseña incorrectos.'
+      });
+    }
   }
-
-  const { email, password } = this.loginForm.value;
-
-  // 1. Intentamos obtener el usuario registrado en LocalStorage
-  const savedUserJson = localStorage.getItem('user_session');
-  const savedUser = savedUserJson ? JSON.parse(savedUserJson) : null;
-
-  // 2. Validamos contra LocalStorage O contra tus credenciales fijas
-  const esUsuarioRegistrado = savedUser && email === savedUser.email && password === savedUser.password;
-  const esAdminFijo = email === this.USER_VALID && password === this.PASS_VALID;
-
-  if (esUsuarioRegistrado || esAdminFijo) {
-    this.messageService.add({ 
-      severity: 'success', 
-      summary: '¡Bienvenido!', 
-      detail: `Hola ${savedUser?.nombre || 'Admin'}. Redirigiendo...` 
-    });
-    setTimeout(() => this.router.navigate(['/home']), 1500);
-  } else {
-    this.messageService.add({ 
-      severity: 'error', 
-      summary: 'Acceso Denegado', 
-      detail: 'Correo o contraseña incorrectos.' 
-    });
-  }
-}
 }

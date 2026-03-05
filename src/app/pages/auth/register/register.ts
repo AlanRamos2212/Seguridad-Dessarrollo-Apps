@@ -86,40 +86,43 @@ private initForm() {
   }
 
   onSubmit() {
-    // Si el formulario es inválido, marcamos todo como "tocado" para que se pinte de rojo
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      this.messageService.add({ 
-        severity: 'error', 
-        summary: 'Formulario Inválido', 
-        detail: 'Por favor, rellena los campos marcados en rojo correctamente.' 
-      });
-      return;
+        this.registerForm.markAllAsTouched();
+        this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Formulario Inválido', 
+            detail: 'Por favor, rellena los campos marcados en rojo correctamente.' 
+        });
+        return;
     }
 
-    // --- LÓGICA DE PERSISTENCIA (LOCAL STORAGE) ---
-    // Extraemos los datos que necesitamos para el Login
-    const { email, password, nombre } = this.registerForm.value;
-    
+    // Extraer todos los datos del formulario
+    const {
+        email, password, nombre, direccion, telefono, fechaNacimiento
+    } = this.registerForm.value;
+
     const userSession = {
-      email: email,
-      password: password,
-      nombre: nombre
+        email: email,
+        password: password,
+        name: nombre,
+        direccion: direccion,
+        telefono: telefono,
+        fechaNacimiento: fechaNacimiento,
+        miembroDesde: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })
     };
 
-    // Guardamos en LocalStorage para que el Login lo pueda leer
+    // Guardar en LocalStorage
     localStorage.setItem('user_session', JSON.stringify(userSession));
-    // ----------------------------------------------
 
     this.messageService.add({ 
-      severity: 'success', 
-      summary: '¡Éxito!', 
-      detail: 'Tu cuenta ha sido creada y guardada localmente.' 
+        severity: 'success', 
+        summary: '¡Éxito!', 
+        detail: 'Tu cuenta ha sido creada y guardada localmente.' 
     });
 
     // Redirección al Login después de 2 segundos
     setTimeout(() => {
-      this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/login']);
     }, 2000);
   }
 }

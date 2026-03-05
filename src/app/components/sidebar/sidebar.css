@@ -1,29 +1,98 @@
-/* Estilos para el logo */
-.logo {
-    width: 35px;
+/* Sidebar Emerald Security Theme */
+:host ::ng-deep .custom-sidebar {
+    background: rgba(6, 26, 42, 0.95) !important;
+    /* #061a2a with transparency */
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(16, 185, 176, 0.2) !important;
+    color: #e2e8f0 !important;
 }
 
-/* Estilos para el título del sistema */
+:host ::ng-deep .p-drawer-header {
+    background: transparent !important;
+    padding: 1.5rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Navigation Links */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    margin: 0.25rem 0.75rem;
+    border-radius: 12px;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.nav-link.active-link {
+    background: linear-gradient(90deg, rgba(16, 185, 176, 0.15) 0%, rgba(16, 185, 176, 0) 100%);
+    color: #10b9b0;
+    box-shadow: inset 4px 0 0 #10b9b0;
+}
+
+.nav-indicator {
+    display: none;
+    width: 4px;
+    height: 20px;
+    background: #10b9b0;
+    border-radius: 0 4px 4px 0;
+    position: absolute;
+    left: 0;
+}
+
+.active-link .nav-indicator {
+    display: block;
+}
+
+.nav-icon {
+    font-size: 1.25rem;
+    margin-right: 1rem;
+    transition: color 0.2s;
+}
+
+.active-link .nav-icon {
+    color: #10b9b0;
+}
+
+/* ERP Title */
 .erp-title {
-    color: #22c55e;
+    background: linear-gradient(90deg, #ffffff 0%, #10b9b0 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+    font-weight: 800;
 }
 
-/* Estilos para el contenedor principal del sidebar */
-.sidebar-container {
-    background-color: #121212;
-    margin: 0;
-    padding: 0;
+/* Sidebar Footer */
+.sidebar-footer {
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Seleccionamos el botón de PrimeNG específicamente */
+/* Floating Menu Button */
 :host ::ng-deep .p-button {
     position: fixed !important;
-    top: 1rem !important; /* Separar ligeramente del borde superior */
-    left: 1rem !important; /* Separar del borde izquierdo */
-    z-index: 1100 !important; /* Por encima de las cards */
-    margin: 0 !important;
-    border-radius: 0 0 12px 0 !important; /* Solo redondea la esquina interna */
-    padding: 1rem !important;
-    height: 3rem;
+    top: 1.25rem !important;
+    left: 1.25rem !important;
+    z-index: 1000;
+    background: #c6f7ff !important;
+    border: 1px solid #00ccff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 16px -4px rgba(38, 246, 249, 0.3) !important;
 }
 
+:host ::ng-deep .p-button:hover {
+    background: #043864 !important;
+    color: #ffffff !important;
+    transform: scale(1.05);
+}

@@ -1,51 +1,172 @@
-<div class="p-5">
-    <div class="mb-5">
-        <h1 class="text-3xl font-bold text-900">Gestión de Grupo</h1>
-        <p class="text-600">Visualiza el rendimiento y los miembros de tu equipo.</p>
+<p-toast></p-toast>
+
+<div class="page-container">
+  <!-- Stats Header -->
+  <div class="stats-container grid">
+    <div class="col-12 md:col-4">
+      <div class="total-card p-card">
+        <div class="total-content">
+          <div class="total-info">
+            <span class="total-label">Total de Grupos</span>
+            <h1 class="total-num">{{ grupos.length }}</h1>
+          </div>
+          <div class="total-icon-wrapper">
+            <i class="pi pi-users total-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Actions -->
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2 class="text-900 font-bold m-0">Gestión de Grupos</h2>
+    <p-button label="Agregar Grupo" icon="pi pi-plus" class="p-button-raised p-button-primary"
+      (onClick)="openModal(false)">
+    </p-button>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Nombre del Grupo</th>
+          <th>Nivel</th>
+          <th>Descripción</th>
+          <th>Responsable</th>
+          <th>Integrantes</th>
+          <th class="text-center">Tickets</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let grupo of grupos; let i = index">
+          <td>
+            <span class="group-name">{{ grupo.nombre }}</span>
+          </td>
+          <td>
+            <p-tag [value]="'Nivel ' + grupo.nivel"
+              [severity]="grupo.nivel > 2 ? 'danger' : (grupo.nivel > 1 ? 'warn' : 'info')" [rounded]="true"></p-tag>
+          </td>
+          <td>
+            <div class="description-text" [title]="grupo.descripcion">{{ grupo.descripcion }}</div>
+          </td>
+          <td>
+            <div class="author-cell">
+              <i class="pi pi-user text-400"></i>
+              <span class="author-name">{{ grupo.autor }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="flex flex-wrap gap-1">
+              <p-tag *ngFor="let member of grupo.integrantes" [value]="member" severity="secondary" [rounded]="true"
+                styleClass="text-xs"></p-tag>
+            </div>
+          </td>
+          <td class="text-center">
+            <p-badge [value]="grupo.tickets.toString()"
+              [severity]="grupo.tickets > 25 ? 'danger' : 'success'"></p-badge>
+          </td>
+          <td class="text-center">
+            <div class="flex justify-content-center gap-1">
+              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
+                (onClick)="openModal(true, i)" pTooltip="Editar">
+              </p-button>
+              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deleteGroup(i)"
+                pTooltip="Eliminar">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="grupos.length === 0">
+          <td colspan="7" class="p-8 text-center">
+            <i class="pi pi-folder-open text-400 text-5xl mb-3"></i>
+            <p class="text-500 font-medium">No se encontraron grupos registrados.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<p-dialog [(visible)]="displayModal" [modal]="true" [style]="{ width: '550px' }" [draggable]="false" [resizable]="false"
+  [closable]="false" styleClass="custom-modal">
+
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <div class="header-icon-wrapper">
+        <i [class]="isEditing ? 'pi pi-pencil' : 'pi pi-plus-circle'" class="header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="m-0 text-xl font-bold">{{ isEditing ? 'Configurar Grupo' : 'Registrar Nuevo Grupo' }}</h2>
+        <p class="m-0 text-sm text-500">Completa la información del grupo de seguridad.</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="groupForm" (ngSubmit)="saveGroup()" class="form-grid mt-2">
+
+    <div class="input-wrapper">
+      <label for="nombre" class="input-label">Nombre del Proyecto / Grupo</label>
+      <div class="p-input-icon-left">
+        <i class="pi pi-briefcase"></i>
+        <input id="nombre" type="text" pInputText formControlName="nombre" class="custom-input w-full"
+          placeholder="Ej: Análisis de Riesgos 2024" />
+      </div>
     </div>
 
     <div class="grid">
-        <div class="col-12 md:col-4">
-            <p-card styleClass="shadow-2 border-left-3 border-blue-500 h-full">
-                <div class="flex justify-content-between align-items-center">
-                    <div>
-                        <span class="block text-500 font-medium mb-3">Total de Miembros (N)</span>
-                        <div class="text-900 font-bold text-4xl">{{ totalMiembros }}</div>
-                    </div>
-                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:3rem;height:3rem">
-                        <i class="pi pi-users text-blue-500 text-xl"></i>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <p-tag value="+5 nuevos" severity="success" [rounded]="true"></p-tag>
-                    <span class="text-500 ml-2">desde ayer</span>
-                </div>
-            </p-card>
+      <div class="col-4">
+        <div class="input-wrapper">
+          <label for="nivel" class="input-label">Nivel</label>
+          <p-inputNumber id="nivel" formControlName="nivel" [showButtons]="true" buttonLayout="horizontal"
+            spinnerMode="horizontal" inputStyleClass="custom-input w-full text-center"
+            decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
+            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" [min]="1">
+          </p-inputNumber>
         </div>
-
-        <div class="col-12 md:col-8">
-            <p-card [header]="nombreGrupo" subTitle="Actividad del grupo" styleClass="shadow-2 h-full">
-                <ng-template pTemplate="header">
-                    <img alt="Card Header Image" src="https://primefaces.org/cdn/primeng/images/usercard.png" class="w-full border-round-top" style="height: 150px; object-fit: cover;" />
-                </ng-template>
-                
-                <p class="m-0 leading-relaxed text-700">
-                    Este grupo está enfocado en la implementación de la Práctica 5. 
-                    Actualmente revisando la integración del Sidebar y las nuevas rutas de usuario.
-                </p>
-
-                <div class="flex align-items-center gap-3 mt-4">
-                    <p-button label="Ver Miembros" icon="pi pi-search" severity="info"></p-button>
-                    <p-button label="Configurar" icon="pi pi-cog" severity="secondary" [outlined]="true"></p-button>
-                </div>
-
-                <ng-template pTemplate="footer">
-                    <div class="flex align-items-center text-500 text-sm">
-                        <i class="pi pi-clock mr-2"></i>
-                        <span>Última actualización: {{ ultimaActividad }}</span>
-                    </div>
-                </ng-template>
-            </p-card>
+      </div>
+      <div class="col-4">
+        <div class="input-wrapper">
+          <label for="tickets" class="input-label">Tickets</label>
+          <p-inputNumber id="tickets" formControlName="tickets" [min]="0"
+            inputStyleClass="custom-input w-full text-center" placeholder="0">
+          </p-inputNumber>
         </div>
+      </div>
+      <div class="col-4">
+        <div class="input-wrapper">
+          <label for="autor" class="input-label">Responsable</label>
+          <input id="autor" type="text" pInputText formControlName="autor" class="custom-input w-full"
+            placeholder="Nombre" />
+        </div>
+      </div>
     </div>
-</div>
+
+    <div class="input-wrapper">
+      <label for="integrantes" class="input-label">Integrantes del Equipo</label>
+      <span class="p-input-icon-left">
+        <i class="pi pi-users"></i>
+        <input id="integrantes" type="text" pInputText formControlName="integrantes"
+          placeholder="Juan Pérez, Maria López..." class="custom-input w-full" />
+      </span>
+      <small class="text-500 italic">Separa los nombres con comas.</small>
+    </div>
+
+    <div class="input-wrapper">
+      <label for="descripcion" class="input-label">Descripción Detallada</label>
+      <textarea id="descripcion" rows="4" formControlName="descripcion" class="custom-input w-full resize-none"
+        placeholder="Describe el propósito y alcance de este grupo...">
+      </textarea>
+    </div>
+
+    <div class="modal-footer">
+      <p-button label="Descartar" icon="pi pi-times" [text]="true" severity="danger"
+        (onClick)="closeModal()"></p-button>
+      <p-button [label]="isEditing ? 'Actualizar' : 'Registrar'" [icon]="isEditing ? 'pi pi-sync' : 'pi pi-check'"
+        type="submit" [disabled]="groupForm.invalid" styleClass="btn-save border-round-lg"></p-button>
+    </div>
+
+  </form>
+</p-dialog>
