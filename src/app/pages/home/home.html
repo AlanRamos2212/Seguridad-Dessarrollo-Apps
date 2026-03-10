@@ -84,7 +84,7 @@
 
           <!-- Related Tickets Section -->
           <div class="mb-3 border-top-1 border-gray-100 pt-3">
-            <span class="text-xs font-bold text-500 uppercase block mb-2">Tickets del Grupo</span>
+            <p class="text-xs font-bold text-500 uppercase block mb-2 font-bold" class="ticket_card">Tickets del Grupo</p>
             <div class="flex flex-column gap-2 max-h-12rem overflow-y-auto pr-1">
               <div *ngFor="let ticket of getGroupTickets(group.id)" class="group-ticket-item cursor-pointer"
                 [style.border-left-color]="getStatusColor(ticket.status)"

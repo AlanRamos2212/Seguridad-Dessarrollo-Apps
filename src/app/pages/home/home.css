@@ -124,7 +124,7 @@
 
 /* Premium Group Card Styles */
 .group-card-premium {
-    background: rgb(107, 105, 105);
+    background: rgb(29, 43, 76);
     border-radius: 1.5rem;
     overflow: hidden;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
@@ -134,36 +134,40 @@
 
 .group-card-premium:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px -12px rgba(0, 72, 255, 0.188);
 }
 
 .group-card-header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #103c83 100%);
     position: relative;
+}
+
+.ticket_card {
+    color: #2e2c2c;
 }
 
 .group-avatar {
     width: 36px;
     height: 36px;
     background: rgba(8, 8, 8, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.347);
+    border: 1px solid rgba(242, 242, 242, 0.347);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #38bdf8;
+    color: #ffcc02;
     font-size: 1.2rem;
 }
 
 .member-chip-gray {
-    background: #f8fafc !important;
+    background: #253647 !important;
     border: 1px solid #e2e8f0 !important;
     color: #475569 !important;
     font-weight: 500 !important;
 }
 
 .member-chip-gray .p-chip-remove-icon {
-    color: #94a3b8 !important;
+    color: #b89494 !important;
 }
 
 .member-chip-gray:hover .p-chip-remove-icon {
@@ -172,8 +176,9 @@
 
 /* Group Ticket Item Styles */
 .group-ticket-item {
-    background: #595555;
+    background: hsla(231, 19%, 21%, 0.864);
     border: 1px solid #000000;
+    color: #ffffff;
     border-left-width: 4px;
     border-left-style: solid;
     border-radius: 8px;
@@ -185,7 +190,8 @@
 .group-ticket-item:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transform: translateX(4px);
-    background: #f8fafc;
+    color: #000;
+    background: #606060;
 }
 
 .text-xxs {
