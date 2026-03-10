@@ -1,6 +1,7 @@
 {
   "name": "practica",
   "version": "0.0.0",
+  "author": "emmarher",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -25,6 +26,7 @@
   "packageManager": "npm@11.2.0",
   "dependencies": {
     "@angular/animations": "^20.0.0",
+    "@angular/cdk": "^20.2.14",
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
     "@angular/core": "^20.0.0",

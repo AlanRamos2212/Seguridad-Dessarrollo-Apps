@@ -2,7 +2,7 @@
 
 <div class="flex align-items-center justify-content-center min-h-screen bg-blue-50 p-3">
   <div class="card p-5 shadow-8 border-round-2xl bg-white w-full" style="max-width: 450px;">
-    
+
     <div class="text-center mb-5">
       <div class="inline-flex align-items-center justify-content-center border-circle bg-blue-100 w-4rem h-4rem mb-3">
         <i class="pi pi-lock text-blue-600 text-3xl"></i>
@@ -12,16 +12,13 @@
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="p-fluid">
-      
+
       <div class="field mb-4">
         <label class="block text-blue-900 font-semibold mb-2">Correo Electrónico</label>
         <p-iconfield iconPosition="left">
           <p-inputicon class="pi pi-envelope text-blue-500"></p-inputicon>
-          <input pInputText 
-                 formControlName="email" 
-                 type="email" 
-                 placeholder="admin@correo.com"
-                 [class.ng-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="w-full" />
+          <input pInputText formControlName="email" type="email" placeholder="admin@correo.com"
+            [class.ng-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="w-full" />
         </p-iconfield>
         <small class="p-error block mt-1" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
           <span *ngIf="loginForm.get('email')?.hasError('required')">El correo es obligatorio.</span>
@@ -33,21 +30,17 @@
         <label class="block text-blue-900 font-semibold mb-2">Contraseña</label>
         <p-iconfield iconPosition="left">
           <p-inputicon class="pi pi-key text-blue-500"></p-inputicon>
-          <input pInputText 
-                 formControlName="password" 
-                 type="password" 
-                 placeholder="********"
-                 [class.ng-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="w-full" />
+          <input pInputText formControlName="password" type="password" placeholder="********"
+            [class.ng-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            class="w-full" />
         </p-iconfield>
-        <small class="p-error block mt-1" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        <small class="p-error block mt-1"
+          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
           La contraseña es obligatoria para ingresar.
         </small>
       </div>
 
-      <button pButton pRipple 
-              label="Ingresar" 
-              type="submit" 
-              class="w-full py-3 text-xl font-bold shadow-2"> 
+      <button pButton pRipple label="Ingresar" type="submit" class="w-full py-3 text-xl font-bold shadow-2">
       </button>
 
     </form>
@@ -57,6 +50,6 @@
         ¿No tienes cuenta? Regístrate aquí
       </a>
     </div>
-    
+
   </div>
 </div>

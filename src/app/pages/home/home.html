@@ -1,155 +1,363 @@
-<div class="p-4 surface-ground min-h-screen">
+<div class="p-4 bg-gray-50 min-h-screen">
 
-  <!-- HEADER -->
-  <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-5">
-    <div>
-      <h1 class="text-4xl font-bold text-900 mb-2">Bienvenido, Daniel 👋</h1>
-      <span class="text-600">Aquí tienes el resumen general del sistema</span>
-    </div>
-
-    <div class="flex gap-2 mt-3 md:mt-0">
-      <button pButton label="Nuevo Proyecto" icon="pi pi-plus" class="p-button-primary"></button>
-      <button pButton label="Generar Reporte" icon="pi pi-chart-line" class="p-button-outlined"></button>
+  <!-- HEADER & STATS -->
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold text-gray-800 m-0">Dashboard de Tickets</h1>
+    <div class="flex align-items-center gap-3">
+      <span class="font-medium text-gray-600">Vista: {{ viewMode === 'kanban' ? 'Kanban' : 'Lista' }}</span>
+      <p-toggleSwitch [(ngModel)]="viewMode" [trueValue]="'list'" [falseValue]="'kanban'"></p-toggleSwitch>
     </div>
   </div>
 
-  <!-- TARJETAS KPI -->
-  <div class="grid mb-5">
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div class="p-4 border-round-2xl shadow-3 text-white"
-           style="background: linear-gradient(135deg,#4f46e5,#3b82f6);">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <span class="block text-sm">Usuarios Activos</span>
-            <span class="text-4xl font-bold">128</span>
-            <div class="text-sm mt-2">+12% este mes</div>
-          </div>
-          <i class="pi pi-users text-5xl opacity-50"></i>
-        </div>
+  <div class="grid mb-4">
+    <div class="col-12 md:col-6 lg:col-2">
+      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-blue-500">
+        <div class="text-gray-500 text-sm mb-1">Total</div>
+        <div class="text-2xl font-bold">{{ stats.total }}</div>
       </div>
     </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div class="p-4 border-round-2xl shadow-3 text-white"
-           style="background: linear-gradient(135deg,#10b981,#059669);">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <span class="block text-sm">Proyectos</span>
-            <span class="text-4xl font-bold">34</span>
-            <div class="text-sm mt-2">5 nuevos</div>
-          </div>
-          <i class="pi pi-briefcase text-5xl opacity-50"></i>
-        </div>
+    <div class="col-12 md:col-6 lg:col-2">
+      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-yellow-500">
+        <div class="text-gray-500 text-sm mb-1">Pendiente</div>
+        <div class="text-2xl font-bold">{{ stats.pendiente }}</div>
       </div>
     </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div class="p-4 border-round-2xl shadow-3 text-white"
-           style="background: linear-gradient(135deg,#f59e0b,#f97316);">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <span class="block text-sm">Tareas Pendientes</span>
-            <span class="text-4xl font-bold">3</span>
-            <div class="text-sm mt-2">76 totales</div>
-          </div>
-          <i class="pi pi-check-square text-5xl opacity-50"></i>
-        </div>
+    <div class="col-12 md:col-6 lg:col-2">
+      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-blue-400">
+        <div class="text-gray-500 text-sm mb-1">En Progreso</div>
+        <div class="text-2xl font-bold">{{ stats.progreso }}</div>
       </div>
     </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <div class="p-4 border-round-2xl shadow-3 text-white"
-           style="background: linear-gradient(135deg,#ef4444,#dc2626);">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <span class="block text-sm">Reportes Generados</span>
-            <span class="text-4xl font-bold">12</span>
-            <div class="text-sm mt-2">Hoy actualizado</div>
-          </div>
-          <i class="pi pi-chart-bar text-5xl opacity-50"></i>
-        </div>
+    <div class="col-12 md:col-6 lg:col-2">
+      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-purple-500">
+        <div class="text-gray-500 text-sm mb-1">En Revisión</div>
+        <div class="text-2xl font-bold">{{ stats.revision }}</div>
       </div>
     </div>
-
+    <div class="col-12 md:col-6 lg:col-2">
+      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-green-500">
+        <div class="text-gray-500 text-sm mb-1">Finalizada</div>
+        <div class="text-2xl font-bold">{{ stats.finalizada }}</div>
+      </div>
+    </div>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- MAIN CONTENT GRID -->
   <div class="grid">
+    <!-- GROUPS COLUMN -->
+    <div class="col-12 lg:col-3">
+      <div class="flex align-items-center justify-content-between mb-3 px-2">
+        <h3 class="text-xl font-bold text-900 m-0">Grupos de Trabajo</h3>
+        <p-button icon="pi pi-cog" [rounded]="true" [text]="true" severity="secondary" [routerLink]="['/group']"
+          pTooltip="Gestionar Grupos"></p-button>
+      </div>
 
-    <!-- GRAFICA -->
-    <div class="col-12 lg:col-8">
-      <div class="card border-round-2xl shadow-2 p-4">
-        <h3 class="text-xl font-semibold mb-4">Estadísticas Mensuales</h3>
-        <p-chart type="line" [data]="chartData"></p-chart>
+      <div *ngFor="let group of groups" class="group-card-premium mb-4">
+        <!-- Card Header with Navigation -->
+        <div class="group-card-header p-3 cursor-pointer" [routerLink]="['/group']">
+          <div class="flex justify-content-between align-items-center">
+            <div class="flex align-items-center gap-2">
+              <div class="group-avatar">
+                <i class="pi pi-shield text-blue-400"></i>
+              </div>
+              <span class="font-bold text-lg text-white">{{ group.name }}</span>
+            </div>
+            <p-badge [value]="group.level.toString()" severity="contrast" styleClass="border-circle"></p-badge>
+          </div>
+          <p class="text-xs text-blue-100 mt-2 line-clamp-2 opacity-80">{{ group.description }}</p>
+        </div>
+
+        <div class="p-3 bg-white border-round-bottom-2xl shadow-1">
+          <!-- Miembros Section -->
+          <div class="mb-3">
+            <div class="flex justify-content-between align-items-center mb-2">
+              <span class="text-xs font-bold text-500 uppercase">Miembros Activos</span>
+              <p-button icon="pi pi-user-plus" [rounded]="true" [text]="true" size="small"
+                (onClick)="addMember(group.id)" pTooltip="Añadir Miembro"></p-button>
+            </div>
+            <div class="flex flex-wrap gap-1">
+              <p-chip *ngFor="let member of group.members" [label]="member" [removable]="true"
+                (onRemove)="removeMember(group.id, member)" styleClass="text-xs member-chip-black"></p-chip>
+            </div>
+            <div *ngIf="group.members.length === 0" class="text-xs text-400 italic py-2">Sin miembros asignados.</div>
+          </div>
+
+          <!-- Related Tickets Section -->
+          <div class="mb-3 border-top-1 border-gray-100 pt-3">
+            <span class="text-xs font-bold text-500 uppercase block mb-2">Tickets del Grupo</span>
+            <div class="flex flex-column gap-2 max-h-12rem overflow-y-auto pr-1">
+              <div *ngFor="let ticket of getGroupTickets(group.id)" class="group-ticket-item cursor-pointer"
+                [style.border-left-color]="getStatusColor(ticket.status)"
+                (click)="viewTicket(ticket); $event.stopPropagation()">
+                <div class="flex justify-content-between align-items-center mb-1">
+                  <span class="text-xs font-bold text-gray-800 truncate mr-2">{{ ticket.title }}</span>
+                  <p-tag [value]="ticket.status" [severity]="getStatusSeverity(ticket.status)"
+                    styleClass="text-xxs"></p-tag>
+                </div>
+                <div class="flex justify-content-between align-items-center">
+                  <span class="text-xxs text-600 font-medium">Asignado: {{ ticket.assignedTo }}</span>
+                  <span class="text-xxs text-500">{{ ticket.dueDate | date:'dd/MM' }}</span>
+                </div>
+              </div>
+              <div *ngIf="getGroupTickets(group.id).length === 0"
+                class="text-xs text-500 italic py-3 text-center bg-gray-50 border-round-lg border-1 border-dashed border-gray-300">
+                No hay tickets activos.
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button pButton icon="pi pi-plus" label="Nuevo Ticket"
+              class="p-button-sm p-button-success border-round-lg flex-1 shadow-1"
+              (click)="showCreateTicket(group.id); $event.stopPropagation()"></button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- ACTIVIDAD RECIENTE -->
-    <div class="col-12 lg:col-4">
-      <div class="card border-round-2xl shadow-2 p-4">
-        <h3 class="text-xl font-semibold mb-4">Actividad Reciente</h3>
+    <!-- TICKETS CONTENT COLUMN -->
+    <div class="col-12 lg:col-9">
+      <!-- DASHBOARD FILTERS -->
+      <div class="flex flex-wrap gap-2 mb-4 bg-white p-3 border-round-2xl shadow-1 align-items-center">
+        <span class="text-sm font-bold text-600 mr-2"><i class="pi pi-filter mr-1"></i> Filtros:</span>
+        <p-button label="Todos" icon="pi pi-list" [rounded]="true" [outlined]="activeFilter !== 'all'"
+          (onClick)="applyFilter('all')" styleClass="p-button-sm"></p-button>
+        <p-button label="Mis Tickets" icon="pi pi-user" [rounded]="true" [outlined]="activeFilter !== 'mine'"
+          (onClick)="applyFilter('mine')" styleClass="p-button-sm" severity="info"></p-button>
+        <p-button label="Sin Asignar" icon="pi pi-user-minus" [rounded]="true"
+          [outlined]="activeFilter !== 'unassigned'" (onClick)="applyFilter('unassigned')" styleClass="p-button-sm"
+          severity="secondary"></p-button>
+        <p-button label="Alta Prioridad" icon="pi pi-exclamation-circle" [rounded]="true"
+          [outlined]="activeFilter !== 'high'" (onClick)="applyFilter('high')" styleClass="p-button-sm"
+          severity="danger"></p-button>
+      </div>
 
-        <ul class="list-none p-0 m-0">
-          <li class="mb-3 flex align-items-center gap-2">
-            <i class="pi pi-user-plus text-green-500"></i>
-            <span>Nuevo usuario registrado</span>
-          </li>
+      <!-- KANBAN VIEW -->
+      <div *ngIf="viewMode === 'kanban'" class="grid" cdkDropListGroup>
+        <div *ngFor="let status of ['Pendiente', 'En Progreso', 'En Revisión', 'Finalizada']"
+          class="col-12 md:col-6 xl:col-3">
+          <div class="bg-gray-200 p-2 border-round-xl min-h-screen" cdkDropList
+            [cdkDropListData]="getTicketsByStatus(status)" (cdkDropListDropped)="onDrop($event, status)">
 
-          <li class="mb-3 flex align-items-center gap-2">
-            <i class="pi pi-briefcase text-blue-500"></i>
-            <span>Proyecto actualizado</span>
-          </li>
+            <div class="flex align-items-center justify-content-between p-2 mb-2">
+              <span class="font-bold text-gray-700 uppercase">{{ status }}</span>
+              <p-badge [value]="getTicketsByStatus(status).length.toString()"
+                [severity]="getStatusSeverity(status)"></p-badge>
+            </div>
 
-          <li class="mb-3 flex align-items-center gap-2">
-            <i class="pi pi-check text-orange-500"></i>
-            <span>Tarea completada</span>
-          </li>
+            <div *ngFor="let ticket of getTicketsByStatus(status)" cdkDrag
+              class="card p-3 mb-2 shadow-1 border-round-lg bg-white cursor-pointer hover:bg-gray-50 border-left-3"
+              [ngClass]="{
+                   'border-yellow-500': ticket.status === 'Pendiente',
+                   'border-blue-400': ticket.status === 'En Progreso',
+                   'border-purple-500': ticket.status === 'En Revisión',
+                   'border-green-500': ticket.status === 'Finalizada'
+                 }" (click)="viewTicket(ticket)">
+              <div class="flex justify-content-between align-items-start mb-2">
+                <span class="font-bold text-sm line-height-2">{{ ticket.title }}</span>
+                <p-tag [value]="ticket.priority"
+                  [severity]="ticket.priority === 'Alta' ? 'danger' : (ticket.priority === 'Media' ? 'warn' : 'info')"
+                  styleClass="text-xs"></p-tag>
+              </div>
+              <p class="text-xs text-500 line-clamp-2 mb-3">{{ ticket.description }}</p>
+              <div class="flex justify-content-between align-items-center">
+                <div class="flex align-items-center gap-1 text-xs text-600">
+                  <i class="pi pi-user" style="font-size: 0.7rem"></i>
+                  <span>{{ ticket.assignedTo }}</span>
+                </div>
+                <span class="text-xs font-medium text-gray-400">{{ ticket.dueDate | date:'dd/MM' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <li class="flex align-items-center gap-2">
-            <i class="pi pi-chart-line text-purple-500"></i>
-            <span>Reporte generado</span>
-          </li>
-        </ul>
+      <!-- LIST VIEW -->
+      <div *ngIf="viewMode === 'list'" class="card shadow-2 border-round-2xl bg-white overflow-hidden">
+        <p-table [value]="tickets" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+          [globalFilterFields]="['title', 'status', 'assignedTo']">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="title">Título <p-sortIcon field="title"></p-sortIcon></th>
+              <th pSortableColumn="status">Estado <p-sortIcon field="status"></p-sortIcon></th>
+              <th pSortableColumn="assignedTo">Asignado <p-sortIcon field="assignedTo"></p-sortIcon></th>
+              <th pSortableColumn="priority">Prioridad <p-sortIcon field="priority"></p-sortIcon></th>
+              <th pSortableColumn="createdAt">Creación <p-sortIcon field="createdAt"></p-sortIcon></th>
+              <th pSortableColumn="dueDate">Límite <p-sortIcon field="dueDate"></p-sortIcon></th>
+              <th>Acción</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-ticket>
+            <tr>
+              <td><span class="font-bold cursor-pointer" (click)="viewTicket(ticket)">{{ ticket.title }}</span></td>
+              <td><p-tag [value]="ticket.status" [severity]="getStatusSeverity(ticket.status)"></p-tag></td>
+              <td>{{ ticket.assignedTo }}</td>
+              <td>
+                <span [ngClass]="{
+                  'text-red-600 font-bold': ticket.priority === 'Alta',
+                  'text-orange-500': ticket.priority === 'Media',
+                  'text-blue-500': ticket.priority === 'Baja'
+                }">{{ ticket.priority }}</span>
+              </td>
+              <td>{{ ticket.createdAt | date:'shortDate' }}</td>
+              <td>{{ ticket.dueDate | date:'shortDate' }}</td>
+              <td>
+                <p-button icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="viewTicket(ticket)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </div>
     </div>
-
   </div>
-
-  <!-- TABLA PROYECTOS 
-  <div class="card border-round-2xl shadow-2 p-4 mt-5">
-    <h3 class="text-xl font-semibold mb-4">Proyectos Recientes</h3>
-
-    <p-table [value]="projects" responsiveLayout="scroll">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Nombre</th>
-          <th>Cliente</th>
-          <th>Estado</th>
-          <th>Progreso</th>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="body" let-project>
-        <tr>
-          <td>{{ project.name }}</td>
-          <td>{{ project.client }}</td>
-          <td>
-            <span class="px-2 py-1 border-round text-xs font-semibold"
-                  [ngClass]="{
-                    'bg-green-100 text-green-700': project.status === 'Activo',
-                    'bg-yellow-100 text-yellow-700': project.status === 'Pendiente'
-                  }">
-              {{ project.status }}
-            </span>
-          </td>
-          <td>
-            <p-progressBar [value]="project.progress"></p-progressBar>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-
-  </div>-->
-
 </div>
+
+<!-- MODAL: CREATE TICKET -->
+<p-dialog [(visible)]="displayTicketModal" [modal]="true" [style]="{width: '500px'}" [draggable]="false"
+  [resizable]="false" [closable]="false" styleClass="custom-modal">
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <div class="header-icon-wrapper">
+        <i class="pi pi-plus-circle header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="m-0">Nuevo Ticket de Seguridad</h2>
+        <p>Asigna una tarea o reporta un incidente.</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="ticketForm" (ngSubmit)="saveTicket()" class="flex flex-column gap-3 mt-2">
+    <div class="input-wrapper">
+      <label for="title" class="input-label">Título del Ticket</label>
+      <input id="title" type="text" pInputText formControlName="title" placeholder="Ej: Vulnerabilidad en API Login"
+        class="custom-input w-full" />
+    </div>
+
+    <div class="input-wrapper">
+      <label for="description" class="input-label">Descripción</label>
+      <textarea id="description" pTextarea formControlName="description" rows="3" placeholder="Detalles de la tarea..."
+        class="custom-input w-full"></textarea>
+    </div>
+
+    <div class="grid">
+      <div class="col-6">
+        <div class="input-wrapper">
+          <label class="input-label">Prioridad</label>
+          <p-select [options]="priorityOptions" formControlName="priority" placeholder="Seleccione"
+            styleClass="custom-input w-full"></p-select>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="input-wrapper">
+          <label class="input-label">Asignar a</label>
+          <input type="text" pInputText formControlName="assignedTo" placeholder="Nombre" class="custom-input w-full" />
+        </div>
+      </div>
+    </div>
+
+    <div class="input-wrapper">
+      <label class="input-label">Fecha Límite</label>
+      <input type="date" pInputText formControlName="dueDate" class="custom-input w-full" />
+    </div>
+
+    <div class="modal-footer">
+      <p-button label="Descartar" icon="pi pi-times" [text]="true" severity="danger"
+        (onClick)="displayTicketModal = false"></p-button>
+      <p-button label="Guardar Ticket" icon="pi pi-check" type="submit" [disabled]="ticketForm.invalid"></p-button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- MODAL: ADD MEMBER -->
+<p-dialog [(visible)]="displayMemberModal" [modal]="true" [style]="{width: '420px'}" [draggable]="false"
+  [resizable]="false" [closable]="false" styleClass="custom-modal">
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <div class="header-icon-wrapper">
+        <i class="pi pi-user-plus header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="m-0">Añadir Miembro</h2>
+        <p>Introduce las credenciales del usuario.</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <form [formGroup]="memberForm" (ngSubmit)="saveMember()" class="mt-3 flex flex-column gap-3">
+    <div class="input-wrapper">
+      <label for="memberEmail" class="input-label">Email o Nombre de Usuario</label>
+      <div class="p-input-icon-left">
+        <i class="pi pi-at"></i>
+        <input id="memberEmail" type="text" pInputText formControlName="email" placeholder="usuario@ejemplo.com"
+          class="custom-input w-full" />
+      </div>
+      <small class="text-red-500 mt-1" *ngIf="memberForm.get('email')?.invalid && memberForm.get('email')?.touched">
+        Ingrese un correo electrónico válido.
+      </small>
+    </div>
+
+    <div class="modal-footer">
+      <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="danger"
+        (onClick)="displayMemberModal = false"></p-button>
+      <p-button label="Invitar al Equipo" icon="pi pi-send" type="submit" [disabled]="memberForm.invalid"
+        styleClass="btn-save"></p-button>
+    </div>
+  </form>
+</p-dialog>
+
+<!-- MODAL: TICKET DETAIL -->
+<p-dialog [(visible)]="displayDetailModal" [modal]="true" [style]="{width: '550px'}" [draggable]="false"
+  [resizable]="false" styleClass="custom-modal" *ngIf="selectedTicket">
+  <ng-template pTemplate="header">
+    <div class="modal-header">
+      <div class="header-icon-wrapper">
+        <i class="pi pi-search header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="m-0">Detalle del Ticket</h2>
+        <p>Seguimiento de incidente y cambios.</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-column gap-3 mt-2">
+    <div class="flex justify-content-between align-items-center">
+      <p-tag [value]="selectedTicket.status" [severity]="getStatusSeverity(selectedTicket.status)"></p-tag>
+      <span class="text-sm text-500">ID: {{ selectedTicket.id }}</span>
+    </div>
+    <h2 class="m-0 text-xl detail-title">{{ selectedTicket.title }}</h2>
+    <p class="detail-description m-0">{{ selectedTicket.description }}</p>
+
+    <div class="grid p-3 bg-gray-50 border-round-xl border-1 border-50">
+      <div class="col-6 mb-2">
+        <span class="block text-xs uppercase detail-label">Prioridad</span>
+        <span class="detail-value text-sm">{{ selectedTicket.priority }}</span>
+      </div>
+      <div class="col-6 mb-2">
+        <span class="block text-xs uppercase detail-label">Asignado a</span>
+        <span class="detail-value text-sm">{{ selectedTicket.assignedTo }}</span>
+      </div>
+      <div class="col-6">
+        <span class="block text-xs uppercase detail-label">Creado</span>
+        <span class="detail-value text-sm">{{ selectedTicket.createdAt | date:'medium' }}</span>
+      </div>
+      <div class="col-6">
+        <span class="block text-xs uppercase detail-label">Límite</span>
+        <span class="detail-value text-sm">{{ selectedTicket.dueDate | date:'mediumDate' }}</span>
+      </div>
+    </div>
+
+    <div>
+      <h4 class="m-0 mb-2 border-bottom-1 border-100 pb-1 text-700">Historial de Cambios</h4>
+      <div class="flex flex-column gap-1 max-h-8rem overflow-y-auto">
+        <div *ngFor="let log of selectedTicket.history" class="text-xs history-log p-2 border-round">
+          {{ log }}
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<p-toast></p-toast>

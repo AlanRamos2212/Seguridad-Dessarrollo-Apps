@@ -219,7 +219,7 @@
 
 /* InputNumber adjustments */
 :host ::ng-deep .p-inputnumber-buttons-horizontal .p-inputnumber-button {
-  background: #064e3b !important;
+  background: #848584 !important;
   border-color: #064e3b !important;
   color: white !important;
 }

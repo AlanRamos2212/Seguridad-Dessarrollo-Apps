@@ -1,0 +1,199 @@
+/* Emerald Security Modal Theme - Copied from group.css for consistency */
+:host ::ng-deep .custom-modal .p-dialog-header {
+    background: #061a2a;
+    border-bottom: 3px solid #10b9b0;
+    padding: 1.5rem 2rem;
+    color: white;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.header-icon-wrapper {
+    background: rgba(16, 185, 129, 0.2);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.header-icon {
+    font-size: 1.4rem;
+    color: #34d399;
+}
+
+.header-text h2 {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-text p {
+    color: #06eac4 !important;
+    opacity: 0.8;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+:host ::ng-deep .custom-modal .p-dialog-content {
+    padding: 2rem;
+    background: #ffffff;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.input-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #064e3b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.custom-input {
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    /* Simplified for light content */
+    background: #f8fafc !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.95rem;
+}
+
+.custom-input:focus {
+    background: #ffffff !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* Detail Modal Specific Typography */
+.detail-title {
+    color: #064e3b;
+    font-weight: 800 !important;
+}
+
+.detail-description {
+    color: #334155;
+    line-height: 1.6;
+}
+
+.detail-label {
+    color: #10b981;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.detail-label-secondary {
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.history-log {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border-left: 3px solid #10b981;
+}
+
+/* Premium Group Card Styles */
+.group-card-premium {
+    background: rgb(107, 105, 105);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.group-card-premium:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.group-card-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    position: relative;
+}
+
+.group-avatar {
+    width: 36px;
+    height: 36px;
+    background: rgba(8, 8, 8, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.347);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #38bdf8;
+    font-size: 1.2rem;
+}
+
+.member-chip-gray {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+.member-chip-gray .p-chip-remove-icon {
+    color: #94a3b8 !important;
+}
+
+.member-chip-gray:hover .p-chip-remove-icon {
+    color: #ef4444 !important;
+}
+
+/* Group Ticket Item Styles */
+.group-ticket-item {
+    background: #595555;
+    border: 1px solid #000000;
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.group-ticket-item:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: translateX(4px);
+    background: #f8fafc;
+}
+
+.text-xxs {
+    font-size: 0.65rem !important;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

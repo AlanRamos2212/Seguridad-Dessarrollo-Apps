@@ -43,30 +43,30 @@
       <tbody>
         <tr *ngFor="let grupo of grupos; let i = index">
           <td>
-            <span class="group-name">{{ grupo.nombre }}</span>
+            <span class="group-name">{{ grupo.name }}</span>
           </td>
           <td>
-            <p-tag [value]="'Nivel ' + grupo.nivel"
-              [severity]="grupo.nivel > 2 ? 'danger' : (grupo.nivel > 1 ? 'warn' : 'info')" [rounded]="true"></p-tag>
+            <p-tag [value]="'Nivel ' + grupo.level"
+              [severity]="grupo.level > 2 ? 'danger' : (grupo.level > 1 ? 'warn' : 'info')" [rounded]="true"></p-tag>
           </td>
           <td>
-            <div class="description-text" [title]="grupo.descripcion">{{ grupo.descripcion }}</div>
+            <div class="description-text" [title]="grupo.description">{{ grupo.description }}</div>
           </td>
           <td>
             <div class="author-cell">
               <i class="pi pi-user text-400"></i>
-              <span class="author-name">{{ grupo.autor }}</span>
+              <span class="author-name">{{ grupo.responsible }}</span>
             </div>
           </td>
           <td>
             <div class="flex flex-wrap gap-1">
-              <p-tag *ngFor="let member of grupo.integrantes" [value]="member" severity="secondary" [rounded]="true"
+              <p-tag *ngFor="let member of grupo.members" [value]="member" severity="secondary" [rounded]="true"
                 styleClass="text-xs"></p-tag>
             </div>
           </td>
           <td class="text-center">
-            <p-badge [value]="grupo.tickets.toString()"
-              [severity]="grupo.tickets > 25 ? 'danger' : 'success'"></p-badge>
+            <p-badge [value]="(grupo.tickets || 0).toString()"
+              [severity]="(grupo.tickets || 0) > 25 ? 'danger' : 'success'"></p-badge>
           </td>
           <td class="text-center">
             <div class="flex justify-content-center gap-1">
@@ -108,55 +108,48 @@
   <form [formGroup]="groupForm" (ngSubmit)="saveGroup()" class="form-grid mt-2">
 
     <div class="input-wrapper">
-      <label for="nombre" class="input-label">Nombre del Proyecto / Grupo</label>
+      <label for="name" class="input-label">Nombre del Proyecto / Grupo</label>
       <div class="p-input-icon-left">
         <i class="pi pi-briefcase"></i>
-        <input id="nombre" type="text" pInputText formControlName="nombre" class="custom-input w-full"
+        <input id="name" type="text" pInputText formControlName="name" class="custom-input w-full"
           placeholder="Ej: Análisis de Riesgos 2024" />
       </div>
     </div>
 
     <div class="grid">
-      <div class="col-4">
+      <div class="col-6">
         <div class="input-wrapper">
-          <label for="nivel" class="input-label">Nivel</label>
-          <p-inputNumber id="nivel" formControlName="nivel" [showButtons]="true" buttonLayout="horizontal"
+          <label for="level" class="input-label">Nivel</label>
+          <p-inputNumber id="level" formControlName="level" [showButtons]="true" buttonLayout="horizontal"
             spinnerMode="horizontal" inputStyleClass="custom-input w-full text-center"
             decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
             incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" [min]="1">
           </p-inputNumber>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-6">
         <div class="input-wrapper">
-          <label for="tickets" class="input-label">Tickets</label>
-          <p-inputNumber id="tickets" formControlName="tickets" [min]="0"
-            inputStyleClass="custom-input w-full text-center" placeholder="0">
-          </p-inputNumber>
-        </div>
-      </div>
-      <div class="col-4">
-        <div class="input-wrapper">
-          <label for="autor" class="input-label">Responsable</label>
-          <input id="autor" type="text" pInputText formControlName="autor" class="custom-input w-full"
+          <label for="responsible" class="input-label">Responsable</label>
+          <input id="responsible" type="text" pInputText formControlName="responsible" class="custom-input w-full"
             placeholder="Nombre" />
         </div>
       </div>
     </div>
 
     <div class="input-wrapper">
-      <label for="integrantes" class="input-label">Integrantes del Equipo</label>
+      <label for="members" class="input-label">Integrantes del Equipo</label>
       <span class="p-input-icon-left">
         <i class="pi pi-users"></i>
-        <input id="integrantes" type="text" pInputText formControlName="integrantes"
-          placeholder="Juan Pérez, Maria López..." class="custom-input w-full" />
+        <input id="members" type="text" pInputText formControlName="members" placeholder="Juan Pérez, Maria López..."
+          class="custom-input w-full" />
       </span>
       <small class="text-500 italic">Separa los nombres con comas.</small>
     </div>
 
     <div class="input-wrapper">
-      <label for="descripcion" class="input-label">Descripción Detallada</label>
-      <textarea id="descripcion" rows="4" formControlName="descripcion" class="custom-input w-full resize-none"
+      <label for="description" class="input-label">Descripción Detallada</label>
+      <textarea id="description" rows="4" formControlName="description"
+        class="p-inputtext custom-input w-full resize-none"
         placeholder="Describe el propósito y alcance de este grupo...">
       </textarea>
     </div>

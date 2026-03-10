@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,9 @@ import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ReactiveFormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { TicketService } from '../../core/services/ticket.service';
+import { Group } from '../../core/models/ticket.model';
 
 @Component({
   selector: 'app-group',
@@ -20,27 +23,30 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './group.html',
   styleUrl: './group.css'
 })
-export class GroupComponent {
-  grupos: { nombre: string; nivel: number; descripcion: string, autor: string, integrantes: string[], tickets: number }[] = [
-    { nombre: "Grupo A", nivel: 1, descripcion: "Descripción del Grupo A", autor: "Alan", integrantes: ["Alan", "Juan", "Pedro"], tickets: 10 },
-    { nombre: "Grupo B", nivel: 2, descripcion: "Descripción del Grupo B", autor: "Alan", integrantes: ["Alan", "Juan", "Pedro"], tickets: 20 },
-    { nombre: "Grupo C", nivel: 3, descripcion: "Descripción del Grupo C", autor: "Alan", integrantes: ["Alan", "Juan", "Pedro"], tickets: 30 }
-  ];
+export class GroupComponent implements OnInit {
+  grupos: Group[] = [];
 
   groupForm: FormGroup;
   displayModal: boolean = false;
   isEditing: boolean = false;
   editingIndex: number | null = null;
 
-  constructor(private messageService: MessageService, private fb: FormBuilder) {
+  constructor(
+    private messageService: MessageService,
+    private fb: FormBuilder,
+    private ticketService: TicketService
+  ) {
     this.groupForm = this.fb.group({
-      nombre: ["", Validators.required],
-      nivel: [1, [Validators.required, Validators.min(1)]],
-      descripcion: ["", Validators.required],
-      autor: ["", Validators.required],
-      integrantes: ["", Validators.required],
-      tickets: [0, [Validators.required, Validators.min(0)]]
+      name: ["", Validators.required],
+      level: [1, [Validators.required, Validators.min(1)]],
+      description: ["", Validators.required],
+      responsible: ["", Validators.required],
+      members: ["", Validators.required]
     });
+  }
+
+  ngOnInit() {
+    this.ticketService.getGroups().subscribe(groups => this.grupos = groups);
   }
 
   openModal(editing: boolean, index?: number) {
@@ -51,16 +57,15 @@ export class GroupComponent {
       this.editingIndex = index;
       const grupo = this.grupos[index];
       this.groupForm.setValue({
-        nombre: grupo.nombre,
-        nivel: grupo.nivel,
-        descripcion: grupo.descripcion,
-        autor: grupo.autor,
-        integrantes: grupo.integrantes.join(', '),
-        tickets: grupo.tickets
+        name: grupo.name,
+        level: grupo.level,
+        description: grupo.description,
+        responsible: grupo.responsible,
+        members: grupo.members.join(', ')
       });
     } else {
       this.editingIndex = null;
-      this.groupForm.reset({ nivel: 1 });
+      this.groupForm.reset({ level: 1 });
     }
   }
 
@@ -72,20 +77,20 @@ export class GroupComponent {
   saveGroup() {
     if (this.groupForm.valid) {
       const formValue = this.groupForm.value;
-      const nuevoGrupo = {
+      const nuevoGrupo: Group = {
+        id: this.isEditing && this.editingIndex !== null ? this.grupos[this.editingIndex].id : Math.random().toString(36).substr(2, 9),
         ...formValue,
-        integrantes: typeof formValue.integrantes === 'string'
-          ? formValue.integrantes.split(',').map((i: string) => i.trim())
-          : formValue.integrantes,
-        tickets: formValue.tickets
+        members: typeof formValue.members === 'string'
+          ? formValue.members.split(',').map((i: string) => i.trim())
+          : formValue.members
       };
 
       if (this.isEditing && this.editingIndex !== null) {
-        this.grupos[this.editingIndex] = nuevoGrupo;
-        this.messageService.add({ severity: 'info', summary: 'Grupo Editado', detail: `El grupo fue actualizado: ${nuevoGrupo.nombre}` });
+        this.ticketService.upsertGroup(nuevoGrupo);
+        this.messageService.add({ severity: 'info', summary: 'Grupo Editado', detail: `El grupo fue actualizado: ${nuevoGrupo.name}` });
       } else {
-        this.grupos.push(nuevoGrupo);
-        this.messageService.add({ severity: 'success', summary: 'Grupo Creado', detail: `Se creó el grupo: ${nuevoGrupo.nombre}` });
+        this.ticketService.upsertGroup(nuevoGrupo);
+        this.messageService.add({ severity: 'success', summary: 'Grupo Creado', detail: `Se creó el grupo: ${nuevoGrupo.name}` });
       }
 
       this.closeModal();
@@ -93,7 +98,9 @@ export class GroupComponent {
   }
 
   deleteGroup(index: number) {
-    const eliminado = this.grupos.splice(index, 1);
-    this.messageService.add({ severity: 'warn', summary: 'Grupo Eliminado', detail: `Se eliminó el grupo: ${eliminado[0].nombre}` });
+    const groupId = this.grupos[index].id;
+    const groupName = this.grupos[index].name;
+    this.ticketService.deleteGroup(groupId);
+    this.messageService.add({ severity: 'warn', summary: 'Grupo Eliminado', detail: `Se eliminó el grupo: ${groupName}` });
   }
 }
