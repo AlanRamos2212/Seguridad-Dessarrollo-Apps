@@ -13,15 +13,14 @@
             <p-button label="Borrar Perfil" icon="pi pi-sign-out" [text]="true" severity="danger"
                 (onClick)="confirmDelete()">
             </p-button>
-            <p-button label="Editar Perfil" icon="pi pi-user-edit" styleClass="btn-emerald2"
-                (onClick)="openModal()">
+            <p-button label="Editar Perfil" icon="pi pi-user-edit" styleClass="btn-emerald2" (onClick)="openModal()">
             </p-button>
         </div>
     </div>
 
     <div class="grid justify-content-center">
         <div class="col-12 lg:col-10 xl:col-8">
-            <p-card styleClass="profile-card">
+            <p-card styleClass="profile-card mb-4">
                 <div class="grid p-4">
                     <!-- Avatar Section -->
                     <div
@@ -97,9 +96,214 @@
                     </div>
                 </div>
             </p-card>
+
+            <!-- Workload Summary -->
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-900 mb-3 border-left-4 border-emerald pl-3">Resumen de Carga de
+                    Trabajo</h3>
+                <div class="grid">
+                    <div class="col-12 md:col-3">
+                        <div
+                            class="stat-card bg-orange-50 border-orange-200 p-3 border-round-xl border-1 shadow-sm h-full flex flex-column justify-content-between">
+                            <span class="text-xs uppercase font-bold text-orange-600 block mb-2">Pendientes</span>
+                            <div class="flex align-items-baseline gap-2">
+                                <span class="text-3xl font-bold text-orange-700">{{ stats().pendiente }}</span>
+                                <span class="text-xs text-orange-400">Tickets</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div
+                            class="stat-card bg-blue-50 border-blue-200 p-3 border-round-xl border-1 shadow-sm h-full flex flex-column justify-content-between">
+                            <span class="text-xs uppercase font-bold text-blue-600 block mb-2">En Progreso</span>
+                            <div class="flex align-items-baseline gap-2">
+                                <span class="text-3xl font-bold text-blue-700">{{ stats().progreso }}</span>
+                                <span class="text-xs text-blue-400">Tickets</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div
+                            class="stat-card bg-purple-50 border-purple-200 p-3 border-round-xl border-1 shadow-sm h-full flex flex-column justify-content-between">
+                            <span class="text-xs uppercase font-bold text-purple-600 block mb-2">En Revisión</span>
+                            <div class="flex align-items-baseline gap-2">
+                                <span class="text-3xl font-bold text-purple-700">{{ stats().revision }}</span>
+                                <span class="text-xs text-purple-400">Tickets</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div
+                            class="stat-card bg-emerald-50 border-emerald-200 p-3 border-round-xl border-1 shadow-sm h-full flex flex-column justify-content-between">
+                            <span class="text-xs uppercase font-bold text-emerald-600 block mb-2">Finalizados</span>
+                            <div class="flex align-items-baseline gap-2">
+                                <span class="text-3xl font-bold text-emerald-700">{{ stats().finalizado }}</span>
+                                <span class="text-xs text-emerald-400">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assigned Tickets List -->
+            <div class="mb-4">
+                <div class="flex justify-content-between align-items-center mb-3">
+                    <h3 class="text-xl font-bold text-900 m-0 border-left-4 border-emerald pl-3">Mis Tickets Asignados
+                    </h3>
+                    <p-tag [value]="userTickets().length + ' Tickets'" severity="info" [rounded]="true"></p-tag>
+                </div>
+
+                <div class="grid">
+                    <div class="col-12 md:col-6 xl:col-4" *ngFor="let ticket of userTickets()">
+                        <app-ticket-card [ticket]="ticket" (cardClick)="viewTicket($event)"></app-ticket-card>
+                    </div>
+                    <div *ngIf="!userTickets().length" class="col-12">
+                        <div class="bg-gray-50 border-1 border-100 border-round-xl p-5 text-center">
+                            <i class="pi pi-inbox text-4xl text-200 mb-2"></i>
+                            <p class="text-500 m-0">No tienes tickets asignados actualmente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Ticket Detail Modal (Copy from Home for consistency) -->
+<p-dialog *ngIf="selectedTicket" [(visible)]="displayDetailModal" [modal]="true" [style]="{ width: '600px' }"
+    [draggable]="false" [resizable]="false" styleClass="custom-modal border-round-2xl">
+
+    <ng-template pTemplate="header">
+        <div class="modal-header w-full flex justify-content-between align-items-center">
+            <div class="flex align-items-center gap-3">
+                <div class="header-icon-wrapper">
+                    <i class="pi pi-search header-icon"></i>
+                </div>
+                <div class="header-text">
+                    <h2 class="m-0">Detalle del Ticket</h2>
+                    <p>Ver y gestionar el seguimiento.</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <p-button *ngIf="!isEditing() && canChangeStatus(selectedTicket)" label="Editar" icon="pi pi-pencil"
+                    [rounded]="true" size="small" (onClick)="toggleEdit()"></p-button>
+                <p-button *ngIf="isEditing()" label="Cancelar" icon="pi pi-times" [rounded]="true" [text]="true"
+                    severity="danger" size="small" (onClick)="toggleEdit()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-column gap-3 mt-2">
+        <!-- VIEW MODE -->
+        <ng-container *ngIf="!isEditing()">
+            <div class="flex justify-content-between align-items-center">
+                <p-tag [value]="selectedTicket.status" [severity]="getStatusSeverity(selectedTicket.status)"></p-tag>
+                <span class="text-xs font-mono ticket-id-modal">ID: {{ selectedTicket.id }}</span>
+            </div>
+            <h2 class="m-0 text-xl detail-title font-bold" style="color: #1e293b;">{{ selectedTicket.title }}</h2>
+            <p class="detail-description m-0" style="color: #475569;">{{ selectedTicket.description }}</p>
+
+            <div class="grid p-3 bg-gray-50 border-round-xl border-1 border-50">
+                <div class="col-6 mb-2">
+                    <span class="block text-xs uppercase detail-label-secondary font-bold">Prioridad</span>
+                    <span class="detail-value text-sm">{{ selectedTicket.priority }}</span>
+                </div>
+                <div class="col-6 mb-2">
+                    <span class="block text-xs uppercase detail-label-secondary font-bold">Asignado a</span>
+                    <span class="detail-value text-sm">{{ selectedTicket.assignedTo }}</span>
+                </div>
+                <div class="col-6">
+                    <span class="block text-xs uppercase detail-label-secondary font-bold">Creado</span>
+                    <span class="detail-value text-sm">{{ selectedTicket.createdAt | date:'medium' }}</span>
+                </div>
+                <div class="col-6">
+                    <span class="block text-xs uppercase detail-label-secondary font-bold">Límite</span>
+                    <span class="detail-value text-sm">{{ selectedTicket.dueDate | date:'mediumDate' }}</span>
+                </div>
+                <div class="col-12 mt-2">
+                    <span class="block text-xs uppercase detail-label-secondary font-bold">Creado por</span>
+                    <span class="detail-value text-sm ">{{ selectedTicket.createdBy }}</span>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- EDIT MODE -->
+        <ng-container *ngIf="isEditing()">
+            <form [formGroup]="ticketForm" (ngSubmit)="updateTicket()" class="flex flex-column gap-3">
+                <div class="input-wrapper" *ngIf="canEditAll(selectedTicket)">
+                    <label class="input-label">Título</label>
+                    <input pInputText formControlName="title" class="custom-input w-full" />
+                </div>
+                <div class="input-wrapper" *ngIf="canEditAll(selectedTicket)">
+                    <label class="input-label">Descripción</label>
+                    <textarea pTextarea formControlName="description" rows="3" class="custom-input w-full"></textarea>
+                </div>
+
+                <div class="grid">
+                    <div class="col-6">
+                        <div class="input-wrapper">
+                            <label class="input-label">Estado</label>
+                            <p-select [options]="statusOptions" formControlName="status" class="custom-input w-full"
+                                appendTo="body"></p-select>
+                        </div>
+                    </div>
+                    <div class="col-6" *ngIf="canEditAll(selectedTicket)">
+                        <div class="input-wrapper">
+                            <label class="input-label">Asignado a</label>
+                            <p-select [options]="users()" formControlName="assignedTo" class="custom-input w-full"
+                                appendTo="body"></p-select>
+                        </div>
+                    </div>
+                    <div class="col-6" *ngIf="canEditAll(selectedTicket)">
+                        <div class="input-wrapper">
+                            <label class="input-label">Prioridad</label>
+                            <p-select [options]="priorityOptions" formControlName="priority" class="custom-input w-full"
+                                appendTo="body"></p-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-content-end gap-2 mt-2">
+                    <p-button label="Guardar Cambios" icon="pi pi-check" type="submit" [rounded]="true"
+                        styleClass="btn-emerald2"></p-button>
+                </div>
+            </form>
+        </ng-container>
+
+        <!-- TABS / SECTIONS (Comments & History) -->
+        <div class="mt-2 text-dark">
+            <h4 class="comment-title m-0 mb-2 border-bottom font-bold" style="color: #000; font-size: 13px;">Comentarios
+            </h4>
+            <div
+                class="flex flex-column gap-2 mb-3 max-h-10rem overflow-y-auto bg-gray-50 p-2 border-round border-blue-400">
+                <div *ngFor="let comment of selectedTicket.comments"
+                    class="text-comment text-xs p-2 bg-white border-1 border-100 border-round shadow-sm comment-content">
+                    {{ comment }}
+                </div>
+                <div *ngIf="!selectedTicket.comments?.length" class="text-xs text-400 italic">No hay comentarios aún.
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <input type="text" pInputText [(ngModel)]="newComment" placeholder="Escribe un comentario..."
+                    class="flex-grow-1 p-inputtext-sm" (keyup.enter)="addComment()" />
+                <p-button icon="pi pi-send" (onClick)="addComment()" [disabled]="!newComment()"
+                    styleClass="p-button-emerald"></p-button>
+            </div>
+        </div>
+
+        <div class="mt-2 text-dark">
+            <h4 class="m-0 mb-2 border-bottom-1 border-100 pb-1 text-700 font-bold"
+                style="color: #1e293b; font-size: 13px;">Historial de Actividad</h4>
+            <div class="flex flex-column gap-1 max-h-8rem overflow-y-auto">
+                <div *ngFor="let log of selectedTicket.history" class="text-xs history-log p-2 border-round"
+                    style="background: #f1f5f9; border-left: 3px solid #10b9b0; color: #475569;">
+                    {{ log }}
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>
 
 <!-- Edit Modal (Emerald Theme) -->
 <p-dialog *ngIf="userForm" [(visible)]="displayModal" [modal]="true" [style]="{ width: '500px' }" [draggable]="false"

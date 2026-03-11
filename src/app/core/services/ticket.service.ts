@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Ticket, Group } from '../models/ticket.model';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -9,8 +8,10 @@ export class TicketService {
     private readonly GROUPS_KEY = 'practica_grupos';
     private readonly TICKETS_KEY = 'practica_tickets';
 
-    private groupsSubject = new BehaviorSubject<Group[]>([]);
-    private ticketsSubject = new BehaviorSubject<Ticket[]>([]);
+    // State driven by Signals
+    public groups = signal<Group[]>([]);
+    public tickets = signal<Ticket[]>([]);
+    public users = signal<string[]>(['Juan Pérez', 'Maria López', 'Alan P.', 'Erik M.', 'Soporte Técnico', 'Sin asignar']);
 
     constructor() {
         this.loadInitialData();
@@ -21,84 +22,77 @@ export class TicketService {
             const savedGroups = localStorage.getItem(this.GROUPS_KEY);
             const savedTickets = localStorage.getItem(this.TICKETS_KEY);
 
-            const initialGroups: Group[] = savedGroups ? JSON.parse(savedGroups) : [
-                {
-                    id: '1',
-                    name: 'Grupo A',
-                    level: 2,
-                    description: 'Análisis de Redes',
-                    responsible: 'Alan',
-                    members: ['alan@correo.com', 'juan@correo.com']
-                }
-            ];
+            const initialGroups: Group[] = savedGroups ? JSON.parse(savedGroups) : [];
 
             const initialTickets: Ticket[] = savedTickets ? JSON.parse(savedTickets) : [];
 
-            this.groupsSubject.next(initialGroups);
-            this.ticketsSubject.next(initialTickets);
+            this.groups.set(initialGroups);
+            this.tickets.set(initialTickets);
         }
     }
 
-    getGroups(): Observable<Group[]> {
-        return this.groupsSubject.asObservable();
-    }
-
-    getTickets(): Observable<Ticket[]> {
-        return this.ticketsSubject.asObservable();
-    }
+    // --- IMMUTABLE STATE UPDATES ---
 
     addMember(groupId: string, member: string) {
-        const groups = this.groupsSubject.value;
-        const group = groups.find(g => g.id === groupId);
-        if (group && !group.members.includes(member)) {
-            group.members.push(member);
-            this.saveGroups(groups);
-        }
+        this.groups.update(groups =>
+            groups.map(g => g.id === groupId && !g.members.includes(member)
+                ? { ...g, members: [...g.members, member] }
+                : g
+            )
+        );
+        this.saveGroups(this.groups());
     }
 
     removeMember(groupId: string, member: string) {
-        const groups = this.groupsSubject.value;
-        const group = groups.find(g => g.id === groupId);
-        if (group) {
-            group.members = group.members.filter(m => m !== member);
-            this.saveGroups(groups);
-        }
+        this.groups.update(groups =>
+            groups.map(g => g.id === groupId
+                ? { ...g, members: g.members.filter(m => m !== member) }
+                : g
+            )
+        );
+        this.saveGroups(this.groups());
     }
 
     upsertGroup(group: Group) {
-        const groups = this.groupsSubject.value;
-        const index = groups.findIndex(g => g.id === group.id);
-        if (index >= 0) {
-            groups[index] = group;
-        } else {
-            groups.push(group);
-        }
-        this.saveGroups(groups);
+        this.groups.update(groups => {
+            const exists = groups.some(g => g.id === group.id);
+            return exists
+                ? groups.map(g => g.id === group.id ? { ...group } : g)
+                : [...groups, group];
+        });
+        this.saveGroups(this.groups());
     }
 
     deleteGroup(groupId: string) {
-        const groups = this.groupsSubject.value.filter(g => g.id !== groupId);
-        this.saveGroups(groups);
+        // Cascade delete: remove tickets associated with this group
+        this.tickets.update(tickets => tickets.filter(t => t.groupId !== groupId));
+        this.saveTickets(this.tickets());
+
+        // Delete the group
+        this.groups.update(groups => groups.filter(g => g.id !== groupId));
+        this.saveGroups(this.groups());
     }
 
     upsertTicket(ticket: Ticket) {
-        const tickets = this.ticketsSubject.value;
-        const index = tickets.findIndex(t => t.id === ticket.id);
-        if (index >= 0) {
-            tickets[index] = ticket;
-        } else {
-            tickets.push(ticket);
-        }
-        this.saveTickets(tickets);
+        this.tickets.update(tickets => {
+            const exists = tickets.some(t => t.id === ticket.id);
+            return exists
+                ? tickets.map(t => t.id === ticket.id ? { ...ticket } : t)
+                : [...tickets, ticket];
+        });
+        this.saveTickets(this.tickets());
+    }
+
+    deleteTicket(ticketId: string) {
+        this.tickets.update(tickets => tickets.filter(t => t.id !== ticketId));
+        this.saveTickets(this.tickets());
     }
 
     private saveGroups(groups: Group[]) {
-        this.groupsSubject.next([...groups]);
         localStorage.setItem(this.GROUPS_KEY, JSON.stringify(groups));
     }
 
     private saveTickets(tickets: Ticket[]) {
-        this.ticketsSubject.next([...tickets]);
         localStorage.setItem(this.TICKETS_KEY, JSON.stringify(tickets));
     }
 }

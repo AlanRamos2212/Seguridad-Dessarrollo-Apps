@@ -35,8 +35,8 @@
     margin: 0;
 }
 
-.header-text p {
-    color: #06eac4 !important;
+:host ::ng-deep .custom-modal .p-dialog-header .header-text p {
+    color: #06eac4;
     opacity: 0.8;
     margin: 0;
     font-size: 0.85rem;
@@ -57,26 +57,32 @@
 .input-label {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #064e3b;
+    color: #000000;
     text-transform: uppercase;
     letter-spacing: 0.025em;
 }
 
-.custom-input {
-    padding: 0.75rem 1rem !important;
-    border-radius: 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    /* Simplified for light content */
-    background: #f8fafc !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+:host ::ng-deep .custom-modal .p-dialog-content .custom-input,
+:host ::ng-deep .custom-modal .p-dialog-content .p-inputtext.custom-input,
+:host ::ng-deep .custom-modal .p-dialog-content .p-select.custom-input,
+:host ::ng-deep .custom-modal .p-dialog-content .p-textarea.custom-input {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #22283f;
+    color: #a9a4a4;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 0.95rem;
 }
 
-.custom-input:focus {
-    background: #ffffff !important;
-    border-color: #10b981 !important;
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
-    outline: none !important;
+:host ::ng-deep .custom-modal .p-dialog-content .custom-input:focus,
+:host ::ng-deep .custom-modal .p-dialog-content .p-inputtext.custom-input:focus,
+:host ::ng-deep .custom-modal .p-dialog-content .p-select.custom-input:focus,
+:host ::ng-deep .custom-modal .p-dialog-content .p-textarea.custom-input:focus {
+    border-color: #10b981;
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    outline: none;
 }
 
 .modal-footer {
@@ -89,9 +95,9 @@
 }
 
 /* Detail Modal Specific Typography */
-.detail-title {
+:host ::ng-deep .custom-modal .p-dialog-content .detail-title {
     color: #064e3b;
-    font-weight: 800 !important;
+    font-weight: 800;
 }
 
 .detail-description {
@@ -116,9 +122,9 @@
     font-weight: 600;
 }
 
-.history-log {
-    background: #f1f5f9 !important;
-    color: #475569 !important;
+:host ::ng-deep .custom-modal .p-dialog-content .history-log {
+    background: #f1f5f9;
+    color: #475569;
     border-left: 3px solid #10b981;
 }
 
@@ -159,19 +165,26 @@
     font-size: 1.2rem;
 }
 
-.member-chip-gray {
-    background: #253647 !important;
-    border: 1px solid #e2e8f0 !important;
-    color: #475569 !important;
-    font-weight: 500 !important;
+:host ::ng-deep .member-chip-black,
+:host ::ng-deep .member-chip-black.p-chip {
+    background: #101010;
+    border: 1px solid #334155;
+    color: #adadad;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
 }
 
-.member-chip-gray .p-chip-remove-icon {
-    color: #b89494 !important;
-}
-
-.member-chip-gray:hover .p-chip-remove-icon {
-    color: #ef4444 !important;
+.miembros-text {
+    color: #000000;
+    font-weight: 380;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 13px;
 }
 
 /* Group Ticket Item Styles */
@@ -194,12 +207,92 @@
     background: #606060;
 }
 
-.text-xxs {
-    font-size: 0.65rem !important;
+.comment-title {
+    color: #000000;
+    font-weight: 380;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 13px;
+}
+
+.text-comment {
+    color: #000000;
+    font-weight: 380;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 13px;
+}
+
+:host ::ng-deep .text-xxs {
+    font-size: 0.65rem;
 }
 
 .truncate {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Premium Detail Modal Adjustments */
+.history-log {
+    background: #f8fafc;
+    border-left: 3px solid #cbd5e1;
+    color: #475569;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.detail-title {
+    color: #1e293b;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.detail-description {
+    color: #475569;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.detail-label {
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    color: #334155;
+    font-weight: 500;
+}
+
+:host ::ng-deep .border-round-2xl {
+    border-radius: 1.5rem !important;
+}
+
+:host ::ng-deep .custom-modal .p-dialog-header {
+    border-top-left-radius: 1.5rem !important;
+    border-top-right-radius: 1.5rem !important;
+}
+
+:host ::ng-deep .custom-modal .p-dialog-content {
+    border-bottom-left-radius: 1.5rem !important;
+    border-bottom-right-radius: 1.5rem !important;
+}
+
+.ticket-id-label {
+    color: #4f46e5 !important;
+    font-weight: 700;
+}
+
+.ticket-id-modal {
+    color: #6366f1;
+    font-weight: 500;
+}
+
+.comment-content {
+    color: #334155 !important;
+    background-color: #f8fafc !important;
+    border-left: 3px solid #10b981 !important;
+    padding-left: 12px !important;
 }

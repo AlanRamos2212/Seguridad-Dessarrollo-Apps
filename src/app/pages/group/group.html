@@ -8,7 +8,7 @@
         <div class="total-content">
           <div class="total-info">
             <span class="total-label">Total de Grupos</span>
-            <h1 class="total-num">{{ grupos.length }}</h1>
+            <h1 class="total-num">{{ grupos().length }}</h1>
           </div>
           <div class="total-icon-wrapper">
             <i class="pi pi-users total-icon"></i>
@@ -41,7 +41,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let grupo of grupos; let i = index">
+        <tr *ngFor="let grupo of grupos(); let i = index">
           <td>
             <span class="group-name">{{ grupo.name }}</span>
           </td>
@@ -79,7 +79,7 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="grupos.length === 0">
+        <tr *ngIf="grupos().length === 0">
           <td colspan="7" class="p-8 text-center">
             <i class="pi pi-folder-open text-400 text-5xl mb-3"></i>
             <p class="text-500 font-medium">No se encontraron grupos registrados.</p>

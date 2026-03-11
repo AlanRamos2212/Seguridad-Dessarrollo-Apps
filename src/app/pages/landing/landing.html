@@ -1,33 +1,53 @@
+<div class="flex flex-column lg:flex-row min-h-screen bg-surface-50">
 
-<div class="flex align-items-center justify-content-center min-h-screen bg-blue-50 p-3">
-  <div class="card p-5 shadow-8 border-round-2xl bg-white w-full" style="max-width: 520px;">
+  <div class="hidden lg:flex flex-1 align-items-center justify-content-center landing-left-panel p-8">
+    <div class="landing-glow-1"></div>
+    <div class="landing-glow-2"></div>
 
-    <div class="text-center mb-5">
-      <div class="inline-flex align-items-center justify-content-center border-circle bg-blue-100 w-4rem h-4rem mb-3">
-        <i class="pi pi-globe text-blue-600 text-3xl"></i>
+    <div class="relative z-1 text-blue-400 max-w-28rem">
+      <div class="flex align-items-center gap-3 mb-4">
+        <div class="landing-icon-box">
+          <i class="pi pi-code text-3xl"></i>
+        </div>
       </div>
-      <h1 class="text-blue-900 text-3xl font-bold mb-2">Bienvenido</h1>
-      <span class="text-600 font-medium">Accede o crea una cuenta para continuar</span>
+      <h2 class="landing-title mb-4"> ERP SYSTEM</h2>
     </div>
+  </div>
 
-    <div class="flex flex-column gap-3">
+  <div class="flex-1 flex align-items-center justify-content-center p-4 lg:p-8 bg-blue-400">
+    <div class="w-full max-w-26rem">
 
-      <button pButton pRipple
-              label="Iniciar Sesión"
-              icon="pi pi-sign-in"
-              routerLink="/auth/login"
-              class="w-full py-3 text-lg font-bold shadow-2">
-      </button>
 
-      <button pButton pRipple
-              label="Registrarse"
-              icon="pi pi-user-plus"
-              routerLink="/auth/register"
-              severity="secondary"
-              class="w-full py-3 text-lg font-bold">
-      </button>
+      <div class="flex flex-column gap-3">
+
+        <p-button label="Acceder al Panel" icon="pi pi-sign-in" iconPos="right" class="w-full"
+          styleClass="w-full py-4 text-xl border-round-2xl font-bold btn-premium-primary" routerLink="/auth/login">
+        </p-button>
+
+        <div class="flex align-items-center my-4">
+          <div class="flex-1 h-px bg-surface-200"></div>
+          <span class="landing-title  px-3 text-navy-muted text-sm font-bold">NUEVOS USUARIOS</span>
+          <div class="flex-1 h-px bg-surface-200"></div>
+        </div>
+
+        <p-button label="Registrar nueva cuenta" icon="pi pi-user-plus" [outlined]="true" class="w-full"
+          styleClass="w-full py-3 border-round-2xl font-semibold border-2 btn-premium-secondary"
+          routerLink="/auth/register">
+        </p-button>
+
+      </div>
+
+      <div class="mt-8 flex flex-column gap-4">
+
+        <div class="divider-premium"></div>
+
+        <div class="flex justify-content-between text-xs font-bold text-navy-muted uppercase tracking-widest px-2">
+          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Términos</a>
+          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Privacidad</a>
+          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Ayuda</a>
+        </div>
+      </div>
 
     </div>
-
   </div>
 </div>
