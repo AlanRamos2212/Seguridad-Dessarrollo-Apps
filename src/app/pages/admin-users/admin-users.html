@@ -130,7 +130,18 @@
             <div class="col-12">
                 <label class="font-bold block mb-1">Asignar a Grupo/Role Inicial</label>
                 <p-select [options]="allGroups()" formControlName="grupo" optionLabel="nombre" optionValue="nombre"
-                   styleClass="surface-50 border-round-lg" placeholder="Seleccione un grupo" appendTo="body"></p-select>
+                   styleClass="surface-50 border-round-lg w-full" placeholder="Seleccione un grupo" appendTo="body">
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        <div class="flex align-items-center" *ngIf="selectedOption">
+                            <span class="bg-blue-50 text-blue-800 border-1 border-blue-200 text-xs px-2 py-1 border-round-xl font-semibold">{{ selectedOption.nombre }}</span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        <div class="flex align-items-center">
+                            <span class="bg-blue-50 text-blue-800 border-1 border-blue-200 text-xs px-2 py-1 border-round-xl font-semibold">{{ item.nombre }}</span>
+                        </div>
+                    </ng-template>
+                </p-select>
                 <small class="text-500 mt-1 block">El usuario heredará todos los permisos definidos para este grupo.</small>
             </div>
         </div>
