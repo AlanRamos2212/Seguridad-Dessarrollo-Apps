@@ -49,23 +49,22 @@
     <div class="col-12 lg:col-3">
       <div class="flex align-items-center justify-content-between mb-3 px-2">
         <h3 class="text-xl font-bold text-900 m-0">Grupos de Trabajo</h3>
-        <p-button icon="pi pi-cog" [rounded]="true" [text]="true" severity="primary" [routerLink]="['/group']"
-          pTooltip="Gestionar Grupos"></p-button>
+        <p-button *appHasPermission="'group:view'" icon="pi pi-cog" [rounded]="true" [text]="true" severity="primary"
+          [routerLink]="['/group']" pTooltip="Gestionar Grupos"></p-button>
       </div>
 
-      <div *ngFor="let group of groups()" class="group-card-premium mb-4">
+      <div *ngFor="let group of visibleGroups()" class="group-card-premium mb-4">
         <!-- Card Header with Navigation -->
-        <div class="group-card-header p-3 cursor-pointer" [routerLink]="['/group']">
+        <div  class="group-card-header p-3 cursor-pointer">
           <div class="flex justify-content-between align-items-center">
-            <div class="flex align-items-center gap-2">
-              <div class="group-avatar">
-                <i class="pi pi-shield text-blue-400"></i>
-              </div>
-              <span class="font-bold text-lg text-white">{{ group.name }}</span>
-            </div>
-            <p-badge [value]="group.level.toString()" severity="contrast" styleClass="border-circle"></p-badge>
+                    <div class="flex align-items-center gap-2">
+                        <p-avatar [label]="(group.nombre || 'U').substring(0,1)" shape="circle" size="normal"></p-avatar>
+                        <span class="font-bold text-lg text-white">{{ group.nombre }}</span>
+                    </div>
+            <!-- Si level no existe en el nuevo modelo, podriamos omitirlo o usar creador_id -->
+            <p-badge *ngIf="group.id" [value]="group.id.substring(0,2)" severity="contrast" styleClass="border-circle"></p-badge>
           </div>
-          <p class="text-xs text-blue-100 mt-2 line-clamp-2 opacity-80">{{ group.description }}</p>
+          <p class="text-xs text-blue-100 mt-2 line-clamp-2 opacity-80">{{ group.descripcion }}</p>
         </div>
 
         <div class="p-3 bg-white border-round-bottom-2xl shadow-1">
@@ -73,17 +72,19 @@
           <div class="mb-3">
             <div class="flex justify-content-between align-items-center mb-2">
               <p class="miembros-text">Miembros del Grupo</p>
-              <p-button icon="pi pi-user-plus" [rounded]="true" [text]="true" size="small"
+              <p-button *ngIf="canAddMember" icon="pi pi-user-plus" [rounded]="true" [text]="true" size="small"
                 (onClick)="addMember(group.id)" pTooltip="Añadir Integrante"></p-button>
             </div>
             <div class="flex flex-wrap gap-1">
-              <div *ngFor="let member of group.members" class="member-chip-black">
-                <span>{{ member }}</span>
-                <i class="pi pi-times-circle cursor-pointer hover:text-red-400" (click)="removeMember(group.id, member)"
-                  pTooltip="Eliminar integrante"></i>
-              </div>
+              <ng-container *ngFor="let ug of group.usuarios_grupos">
+                <div *ngIf="ug.profiles" class="member-chip-black">
+                  <span>{{ ug.profiles.nombre_completo || ug.profiles.username || 'Usuario' }}</span>
+                  <i *ngIf="canAddMember" class="pi pi-times-circle cursor-pointer hover:text-red-400"
+                    (click)="removeMember(group.id, ug.profiles.email || '')" pTooltip="Eliminar integrante"></i>
+                </div>
+              </ng-container>
             </div>
-            <div *ngIf="group.members.length === 0" class="text-xs text-400 italic py-2">Sin miembros asignados.</div>
+            <div *ngIf="!group.usuarios_grupos || group.usuarios_grupos.length === 0" class="text-xs text-400 italic py-2">Sin miembros asignados.</div>
           </div>
 
           <!-- Related Tickets Section -->
@@ -92,16 +93,16 @@
             </p>
             <div class="flex flex-column gap-2 max-h-12rem overflow-y-auto pr-1">
               <div *ngFor="let ticket of getGroupTickets(group.id)" class="group-ticket-item cursor-pointer"
-                [style.border-left-color]="getStatusColor(ticket.status)"
+                [style.border-left-color]="getStatusColor(ticket.estado)"
                 (click)="viewTicket(ticket); $event.stopPropagation()">
                 <div class="flex justify-content-between align-items-center mb-1">
-                  <span class="text-xs font-bold text-gray-800 truncate mr-2">{{ ticket.title }}</span>
-                  <p-tag [value]="ticket.status" [severity]="getStatusSeverity(ticket.status)"
+                  <span class="text-xs font-bold text-gray-800 truncate mr-2">{{ ticket.titulo }}</span>
+                  <p-tag [value]="ticket.estado" [severity]="getStatusSeverity(ticket.estado)"
                     styleClass="text-xxs"></p-tag>
                 </div>
                 <div class="flex justify-content-between align-items-center">
-                  <span class="text-xxs text-600 font-medium">Asignado: {{ ticket.assignedTo }}</span>
-                  <span class="text-xxs text-500">{{ ticket.dueDate | date:'dd/MM' }}</span>
+                  <span class="text-xxs text-600 font-medium">Asignado: {{ ticket.asignado?.nombre_completo || ticket.asignado_id }}</span>
+                  <span class="text-xxs text-500">{{ ticket.fecha_termino | date:'dd/MM' }}</span>
                 </div>
               </div>
               <div *ngIf="getGroupTickets(group.id).length === 0"
@@ -111,7 +112,7 @@
             </div>
           </div>
 
-          <div class="flex gap-2">
+          <div *ngIf="canCreateTicket" class="flex gap-2">
             <button pButton icon="pi pi-plus" label="Nuevo Ticket"
               class="p-button-sm p-button-success border-round-lg flex-1 shadow-1"
               (click)="showCreateTicket(group.id); $event.stopPropagation()"></button>
@@ -140,19 +141,19 @@
       <!-- KANBAN VIEW -->
       <div *ngIf="viewMode() === 'kanban'" class="grid" cdkDropListGroup>
         <div
-          *ngFor="let status of [TicketStatus.PENDIENTE, TicketStatus.EN_PROGRESO, TicketStatus.EN_REVISION, TicketStatus.FINALIZADA]"
+          *ngFor="let estado of [TicketStatus.PENDIENTE, TicketStatus.EN_PROGRESO, TicketStatus.EN_REVISION, TicketStatus.FINALIZADA]"
           class="col-12 md:col-6 xl:col-3">
           <div class="bg-gray-200 p-2 border-round-xl min-h-screen" cdkDropList
-            [cdkDropListData]="getTicketsByStatus(status)" (cdkDropListDropped)="onDrop($event, status)">
+            [cdkDropListData]="getTicketsByStatus(estado)" (cdkDropListDropped)="onDrop($event, estado)">
 
             <div class="flex align-items-center justify-content-between p-2 mb-2">
-              <span class="font-bold text-gray-700 uppercase">{{ status }}</span>
-              <p-badge [value]="getTicketsByStatus(status).length.toString()"
-                [severity]="getStatusSeverity(status)"></p-badge>
+              <span class="font-bold text-gray-700 uppercase">{{ estado }}</span>
+              <p-badge [value]="getTicketsByStatus(estado).length.toString()"
+                [severity]="getStatusSeverity(estado)"></p-badge>
             </div>
 
-            <app-ticket-card *ngFor="let ticket of getTicketsByStatus(status)" cdkDrag [ticket]="ticket"
-              (cardClick)="viewTicket($event)" class="mb-2 block">
+            <app-ticket-card *ngFor="let ticket of getTicketsByStatus(estado)" cdkDrag [cdkDragDisabled]="!canDrag(ticket)" [ticket]="ticket"
+              (cardClick)="viewTicket($event)" class="mb-2 block" [class.cursor-not-allowed]="!canDrag(ticket)">
             </app-ticket-card>
 
           </div>
@@ -162,32 +163,32 @@
       <!-- LIST VIEW -->
       <div *ngIf="viewMode() === 'list'" class="card shadow-2 border-round-2xl bg-white overflow-hidden">
         <p-table [value]="filteredTickets()" [paginator]="true" [rows]="10" responsiveLayout="scroll"
-          [globalFilterFields]="['title', 'status', 'assignedTo']">
+          [globalFilterFields]="['nombre', 'estado', 'asignado_id']">
           <ng-template pTemplate="header">
             <tr>
-              <th pSortableColumn="title">Título <p-sortIcon field="title"></p-sortIcon></th>
-              <th pSortableColumn="status">Estado <p-sortIcon field="status"></p-sortIcon></th>
-              <th pSortableColumn="assignedTo">Asignado <p-sortIcon field="assignedTo"></p-sortIcon></th>
-              <th pSortableColumn="priority">Prioridad <p-sortIcon field="priority"></p-sortIcon></th>
-              <th pSortableColumn="createdAt">Creación <p-sortIcon field="createdAt"></p-sortIcon></th>
-              <th pSortableColumn="dueDate">Límite <p-sortIcon field="dueDate"></p-sortIcon></th>
+              <th pSortableColumn="nombre">Título <p-sortIcon field="nombre"></p-sortIcon></th>
+              <th pSortableColumn="estado">Estado <p-sortIcon field="estado"></p-sortIcon></th>
+              <th pSortableColumn="asignado.nombre_completo">Asignado <p-sortIcon field="asignado.nombre_completo"></p-sortIcon></th>
+              <th pSortableColumn="prioridad">Prioridad <p-sortIcon field="prioridad"></p-sortIcon></th>
+              <th pSortableColumn="creado_en">Creación <p-sortIcon field="creado_en"></p-sortIcon></th>
+              <th pSortableColumn="fecha_termino">Límite <p-sortIcon field="fecha_termino"></p-sortIcon></th>
               <th>Acción</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-ticket>
             <tr>
-              <td><span class="font-bold cursor-pointer" (click)="viewTicket(ticket)">{{ ticket.title }}</span></td>
-              <td><p-tag [value]="ticket.status" [severity]="getStatusSeverity(ticket.status)"></p-tag></td>
-              <td>{{ ticket.assignedTo }}</td>
+              <td><span class="font-bold cursor-pointer" (click)="viewTicket(ticket)">{{ ticket.titulo }}</span></td>
+              <td><p-tag [value]="ticket.estado" [severity]="getStatusSeverity(ticket.estado)"></p-tag></td>
+              <td>{{ ticket.asignado?.nombre_completo || ticket.asignado?.username || ticket.asignado_id }}</td>
               <td>
                 <span [ngClass]="{
-                  'text-red-600 font-bold': ticket.priority === TicketPriority.ALTA || ticket.priority === TicketPriority.MEDIA,
-                  'text-orange-500': ticket.priority === TicketPriority.MEDIA || ticket.priority === TicketPriority.MEDIA,
-                  'text-blue-500': ticket.priority === TicketPriority.BAJA || ticket.priority === TicketPriority.BAJA
-                }">{{ ticket.priority }}</span>
+                  'text-red-600 font-bold': ticket.prioridad === TicketPriority.ALTA,
+                  'text-orange-500': ticket.prioridad === TicketPriority.MEDIA,
+                  'text-blue-500': ticket.prioridad === TicketPriority.BAJA
+                }">{{ ticket.prioridad }}</span>
               </td>
-              <td>{{ ticket.createdAt | date:'shortDate' }}</td>
-              <td>{{ ticket.dueDate | date:'shortDate' }}</td>
+              <td>{{ ticket.creado_en | date:'shortDate' }}</td>
+              <td>{{ ticket.fecha_termino | date:'shortDate' }}</td>
               <td>
                 <p-button icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="viewTicket(ticket)"></p-button>
               </td>
@@ -216,14 +217,14 @@
 
   <form [formGroup]="ticketForm" (ngSubmit)="saveTicket()" class="flex flex-column gap-3 mt-2">
     <div class="input-wrapper">
-      <label for="title" class="input-label">Título del Ticket</label>
-      <input id="title" type="text" pInputText formControlName="title" placeholder="Ej: Vulnerabilidad en API Login"
+      <label for="titulo" class="input-label">Título del Ticket</label>
+      <input id="titulo" type="text" pInputText formControlName="titulo" placeholder="Ej: Vulnerabilidad en API Login"
         class="custom-input w-full" />
     </div>
 
     <div class="input-wrapper">
-      <label for="description" class="input-label">Descripción</label>
-      <textarea id="description" pTextarea formControlName="description" rows="3" placeholder="Detalles de la tarea..."
+      <label for="descripcion" class="input-label">Descripción</label>
+      <textarea id="descripcion" pTextarea formControlName="descripcion" rows="3" placeholder="Detalles de la tarea..."
         class="custom-input w-full"></textarea>
     </div>
 
@@ -231,14 +232,14 @@
       <div class="col-6">
         <div class="input-wrapper">
           <label class="input-label">Prioridad</label>
-          <p-select [options]="priorityOptions" formControlName="priority" placeholder="Seleccione"
-            styleClass="custom-input w-full"></p-select>
+          <p-select [options]="priorityOptions" formControlName="prioridad" optionLabel="label" optionValue="value"
+            placeholder="Seleccione" styleClass="custom-input w-full" appendTo="body"></p-select>
         </div>
       </div>
       <div class="col-6">
         <div class="input-wrapper">
           <label class="input-label">Asignar a</label>
-          <p-select [options]="users()" formControlName="assignedTo" placeholder="Seleccione"
+          <p-select [options]="users()" formControlName="asignado_id" optionLabel="nombre_completo" optionValue="id" placeholder="Seleccione"
             styleClass="custom-input w-full" appendTo="body"></p-select>
         </div>
       </div>
@@ -246,7 +247,7 @@
 
     <div class="input-wrapper">
       <label class="input-label">Fecha Límite</label>
-      <input type="date" pInputText formControlName="dueDate" class="custom-input w-full" />
+      <p-datepicker formControlName="fecha_termino" appendTo="body" [showIcon]="true" styleClass="w-full" inputStyleClass="custom-input w-full p-2"></p-datepicker>
     </div>
 
     <div class="modal-footer">
@@ -321,32 +322,32 @@
     <!-- VIEW MODE -->
     <ng-container *ngIf="!isEditing()">
       <div class="flex justify-content-between align-items-center">
-        <p-tag [value]="selectedTicket.status" [severity]="getStatusSeverity(selectedTicket.status)"></p-tag>
+        <p-tag [value]="selectedTicket.estado" [severity]="getStatusSeverity(selectedTicket.estado)"></p-tag>
         <span class="text-xs font-mono ticket-id-modal">ID: {{ selectedTicket.id }}</span>
       </div>
-      <h2 class="m-0 text-xl detail-title">{{ selectedTicket.title }}</h2>
-      <p class="detail-description m-0">{{ selectedTicket.description }}</p>
+      <h2 class="m-0 text-xl detail-title">{{ selectedTicket.titulo }}</h2>
+      <p class="detail-description m-0">{{ selectedTicket.descripcion }}</p>
 
-      <div class="grid p-3 bg-gray-50 border-round-xl border-1 border-50">
+      <div class="grid p-3 bg-white border-round-xl border-1 border-200 shadow-1">
         <div class="col-6 mb-2">
           <span class="block text-xs uppercase detail-label">Prioridad</span>
-          <span class="detail-value text-sm">{{ selectedTicket.priority }}</span>
+          <span class="detail-value text-sm">{{ selectedTicket.prioridad }}</span>
         </div>
         <div class="col-6 mb-2">
           <span class="block text-xs uppercase detail-label">Asignado a</span>
-          <span class="detail-value text-sm">{{ selectedTicket.assignedTo }}</span>
+          <span class="detail-value text-sm">{{ selectedTicket.asignado_nombre }}</span>
         </div>
         <div class="col-6">
           <span class="block text-xs uppercase detail-label">Creado</span>
-          <span class="detail-value text-sm">{{ selectedTicket.createdAt | date:'medium' }}</span>
+          <span class="detail-value text-sm">{{ selectedTicket.creado_en | date:'medium' }}</span>
         </div>
         <div class="col-6">
           <span class="block text-xs uppercase detail-label">Límite</span>
-          <span class="detail-value text-sm">{{ selectedTicket.dueDate | date:'mediumDate' }}</span>
+          <span class="detail-value text-sm">{{ selectedTicket.fecha_termino | date:'mediumDate' }}</span>
         </div>
         <div class="col-12 mt-2">
           <span class="block text-xs uppercase detail-label">Creado por</span>
-          <span class="detail-value text-sm ">{{ selectedTicket.createdBy }}</span>
+          <span class="detail-value text-sm ">{{ selectedTicket.creador_id }}</span>
         </div>
       </div>
     </ng-container>
@@ -356,35 +357,47 @@
       <form [formGroup]="ticketForm" (ngSubmit)="updateTicket()" class="flex flex-column gap-3">
         <div class="input-wrapper" *ngIf="canEditAll(selectedTicket)">
           <label class="input-label">Título</label>
-          <input pInputText formControlName="title" class="custom-input w-full" />
+          <input pInputText formControlName="titulo" class="custom-input w-full" />
         </div>
         <div class="input-wrapper" *ngIf="canEditAll(selectedTicket)">
           <label class="input-label">Descripción</label>
-          <textarea pTextarea formControlName="description" rows="3" class="custom-input w-full"></textarea>
+          <textarea pTextarea formControlName="descripcion" rows="3" class="custom-input w-full"></textarea>
         </div>
 
         <div class="grid">
           <div class="col-6">
             <div class="input-wrapper">
               <label class="input-label">Estado</label>
-              <p-select [options]="statusOptions" formControlName="status" class="custom-input w-full"
-                appendTo="body"></p-select>
+              <p-select [options]="statusOptions" formControlName="estado" optionLabel="label" optionValue="value"
+                styleClass="custom-input w-full" appendTo="body"></p-select>
             </div>
           </div>
           <div class="col-6" *ngIf="canEditAll(selectedTicket)">
             <div class="input-wrapper">
-              <label class="input-label">Asignado a</label>
-              <p-select [options]="users()" formControlName="assignedTo" class="custom-input w-full"
-                appendTo="body"></p-select>
+              <label class="input-label">Asignar a</label>
+              <p-select [options]="users()" formControlName="asignado_id" optionLabel="nombre_completo" optionValue="id" styleClass="custom-input w-full"
+                appendTo="body" placeholder="Seleccione"></p-select>
             </div>
           </div>
           <div class="col-6" *ngIf="canEditAll(selectedTicket)">
             <div class="input-wrapper">
               <label class="input-label">Prioridad</label>
-              <p-select [options]="priorityOptions" formControlName="priority" class="custom-input w-full"
-                appendTo="body"></p-select>
+              <p-select [options]="priorityOptions" formControlName="prioridad" optionLabel="label" optionValue="value"
+                styleClass="custom-input w-full" appendTo="body" placeholder="Seleccione"></p-select>
             </div>
           </div>
+          <div class="col-6" *ngIf="canEditAll(selectedTicket)">
+            <div class="input-wrapper">
+              <label class="input-label">Fecha Límite</label>
+              <p-datepicker formControlName="fecha_termino" appendTo="body" [showIcon]="true" styleClass="w-full" inputStyleClass="custom-input w-full p-2"></p-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-content-end gap-2 mt-2">
+          <p-button *ngIf="canDeleteTicket" icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+            (onClick)="deleteTicket()" pTooltip="Eliminar">
+          </p-button>
         </div>
 
         <div class="flex justify-content-end gap-2 mt-2">
@@ -396,25 +409,26 @@
     <!-- TABS / SECTIONS (Comments & History) -->
     <div class="mt-2">
       <h4 class="comment-title m-0 mb-2 border-bottom font-bold">Comentarios</h4>
-      <div class="flex flex-column gap-2 mb-3 max-h-10rem overflow-y-auto bg-gray-50 p-2 border-round border-blue-400">
-        <div *ngFor="let comment of selectedTicket.comments"
+      <div class="flex flex-column gap-2 mb-3 max-h-10rem overflow-y-auto bg-white p-2 border-round border-blue-200">
+        <div *ngFor="let comment of selectedTicket.comentarios"
           class="text-comment text-xs p-2 bg-white border-1 border-100 border-round shadow-sm comment-content">
           {{ comment }}
         </div>
-        <div *ngIf="!selectedTicket.comments?.length" class="text-xs text-400 italic">No hay comentarios aún.</div>
+        <div *ngIf="!selectedTicket.comentarios?.length" class="text-xs text-400 italic">No hay comentarios aún.</div>
       </div>
 
       <div class="flex gap-2">
         <input type="text" pInputText [(ngModel)]="newComment" placeholder="Escribe un comentario..."
-          class="flex-grow-1 p-inputtext-sm" (keyup.enter)="addComment()" />
+          class="flex-grow-1 p-inputtext-sm" (keyup.enter)="addComment()" [ngModelOptions]="{standalone: true}" />
         <p-button icon="pi pi-send" (onClick)="addComment()" [disabled]="!newComment()"></p-button>
       </div>
     </div>
 
     <div class="mt-2">
-      <h4 class="m-0 mb-2 border-bottom-1 border-100 pb-1 text-700 font-bold">Historial de Actividad</h4>
+      <h4 class="comment-title m-0 mb-2 border-bottom font-bold">Historial de Actividad</h4>
       <div class="flex flex-column gap-1 max-h-8rem overflow-y-auto">
-        <div *ngFor="let log of selectedTicket.history" class="text-xs history-log p-2 border-round">
+        <div *ngFor="let log of selectedTicket.historial" class="text-xs history-log p-2 border-round shadow-sm mb-1"
+          style="background: #ffffff; border-left: 3px solid #10b9b0; color: #475569; border: 1px solid #f1f5f9;">
           {{ log }}
         </div>
       </div>

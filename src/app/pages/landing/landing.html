@@ -20,32 +20,23 @@
 
       <div class="flex flex-column gap-3">
 
-        <p-button label="Acceder al Panel" icon="pi pi-sign-in" iconPos="right" class="w-full"
-          styleClass="w-full py-4 text-xl border-round-2xl font-bold btn-premium-primary" routerLink="/auth/login">
+
+        <p-button label="Acceder al Panel" [style]="{'background': '#1e3a8a', 'color': 'white'}"
+          styleClass="w-full py-4 text-xl border-round-2xl font-bold" routerLink="/auth/login">
         </p-button>
 
         <div class="flex align-items-center my-4">
           <div class="flex-1 h-px bg-surface-200"></div>
-          <span class="landing-title  px-3 text-navy-muted text-sm font-bold">NUEVOS USUARIOS</span>
+          <span class="landing-text3  px-3 text-navy-muted text-sm font-bold">NUEVOS USUARIOS</span>
           <div class="flex-1 h-px bg-surface-200"></div>
         </div>
 
         <p-button label="Registrar nueva cuenta" icon="pi pi-user-plus" [outlined]="true" class="w-full"
-          styleClass="w-full py-3 border-round-2xl font-semibold border-2 btn-premium-secondary"
+          [style]="{'background': '#6c8de5', 'color': 'white'}"
+          styleClass="landing-text-desc w-full py-3 border-round-2xl font-semibold border-2"
           routerLink="/auth/register">
         </p-button>
 
-      </div>
-
-      <div class="mt-8 flex flex-column gap-4">
-
-        <div class="divider-premium"></div>
-
-        <div class="flex justify-content-between text-xs font-bold text-navy-muted uppercase tracking-widest px-2">
-          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Términos</a>
-          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Privacidad</a>
-          <a href="#" class="hover:text-blue-600 transition-colors no-underline">Ayuda</a>
-        </div>
       </div>
 
     </div>

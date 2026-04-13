@@ -12,6 +12,7 @@ export enum TicketPriority {
 }
 
 export interface UserSession {
+    id: string;      // UUID del usuario
     email: string;
     nombre: string;
     permisos?: string; // para futuros usos de permisos

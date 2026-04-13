@@ -9,6 +9,7 @@ import { SidebarComponent } from '../../components/sidebar/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -28,9 +29,10 @@ import { AvatarModule } from 'primeng/avatar';
 export class MainLayoutComponent {
   sidebarVisible: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private supabaseService: SupabaseService) {}
 
-  logout() {
+  async logout() {
+    try { await this.supabaseService.logout(); } catch(e) {}
     localStorage.removeItem('user_session');
     this.router.navigate(['/auth/login']);
   }

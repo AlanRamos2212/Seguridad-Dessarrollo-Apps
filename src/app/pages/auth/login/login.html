@@ -1,54 +1,71 @@
 <p-toast></p-toast>
 
-<div class="flex align-items-center justify-content-center min-h-screen bg-blue-50 p-3">
-  <div class="card p-5 shadow-8 border-round-2xl bg-white w-full" style="max-width: 450px;">
+<div class="flex align-items-center justify-content-center min-h-screen login-background p-3">
+  <div class="card p-5 shadow-8 border-round-3xl bg-white w-full login-card" style="max-width: 450px;">
 
+    <!-- Logo and Header -->
     <div class="text-center mb-5">
-      <div class="inline-flex align-items-center justify-content-center border-circle bg-blue-100 w-4rem h-4rem mb-3">
-        <i class="pi pi-lock text-blue-600 text-3xl"></i>
+      <div
+        class="inline-flex align-items-center justify-content-center border-circle bg-blue-50 w-5rem h-5rem mb-4 shadow-2">
+        <i class="pi pi-shield text-blue-700 text-4xl"></i>
       </div>
-      <h2 class="text-blue-900 text-3xl font-bold mb-2">Iniciar Sesión</h2>
-      <span class="text-600 font-medium">Ingresa tus credenciales de acceso</span>
+      <h2 class="text-blue-900 text-3xl font-bold mb-2">Acceso al Sistema</h2>
+      <p class="text-600 font-medium">Bienvenido de nuevo, por favor ingresa tus datos</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="p-fluid">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex flex-column gap-4">
 
-      <div class="field mb-4">
-        <label class="block text-blue-900 font-semibold mb-2">Correo Electrónico</label>
-        <p-iconfield iconPosition="left">
-          <p-inputicon class="pi pi-envelope text-blue-500"></p-inputicon>
-          <input pInputText formControlName="email" type="email" placeholder="admin@correo.com"
-            [class.ng-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="w-full" />
-        </p-iconfield>
-        <small class="p-error block mt-1" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          <span *ngIf="loginForm.get('email')?.hasError('required')">El correo es obligatorio.</span>
-          <span *ngIf="loginForm.get('email')?.hasError('email')">Ingresa un formato de correo válido.</span>
+      <!-- Email Field -->
+      <div class="field flex flex-column gap-2">
+        <p-iftalabel>
+          <p-iconfield iconPosition="left">
+            <p-inputicon class="pi pi-envelope text-blue-500"></p-inputicon>
+            <input pInputText id="email" formControlName="email" type="email" autocomplete="email"
+              class="w-full border-round-xl" />
+          </p-iconfield>
+          <label for="email">Correo Electrónico</label>
+        </p-iftalabel>
+        <small class="p-error block h-1rem" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.hasError('required')">El correo es requerido</span>
+          <span *ngIf="loginForm.get('email')?.hasError('email')">Formato inválido</span>
         </small>
       </div>
 
-      <div class="field mb-5">
-        <label class="block text-blue-900 font-semibold mb-2">Contraseña</label>
-        <p-iconfield iconPosition="left">
-          <p-inputicon class="pi pi-key text-blue-500"></p-inputicon>
-          <input pInputText formControlName="password" type="password" placeholder="********"
-            [class.ng-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-            class="w-full" />
-        </p-iconfield>
-        <small class="p-error block mt-1"
+      <!-- Password Field -->
+      <div class="field flex flex-column gap-2">
+        <p-iftalabel>
+          <p-iconfield iconPosition="left">
+            <p-inputicon class="pi pi-key text-blue-500"></p-inputicon>
+            <p-password formControlName="password" [toggleMask]="true" [feedback]="false" id="password"
+              inputStyleClass="w-full border-round-xl" styleClass="w-full" [fluid]="true"
+              placeholder="••••••••"></p-password>
+          </p-iconfield>
+          <label for="password">Contraseña</label>
+        </p-iftalabel>
+        <small class="p-error block h-1rem"
           *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          La contraseña es obligatoria para ingresar.
+          La contraseña es obligatoria
         </small>
       </div>
 
-      <button pButton pRipple label="Ingresar" type="submit" class="w-full py-3 text-xl font-bold shadow-2">
-      </button>
+      <!-- Actions -->
+      <div class="flex align-items-center justify-content-between mb-2">
+        <a class="text-sm font-bold text-blue-600 no-underline cursor-pointer hover:text-blue-800">¿Olvidaste tu
+          contraseña?</a>
+      </div>
+
+      <!-- Submit Button -->
+<p-button label="Iniciar Sesión" icon="pi pi-sign-in" iconPos="right" [loading]="false" type="submit"
+  [style]="{'background': '#1e40af', 'border-color': '#1e40af', 'color': '#ffffff'}"
+  styleClass="w-full py-3 text-xl font-bold border-round-2xl shadow-3" [raised]="true">
+</p-button>
 
     </form>
 
-    <div class="mt-4 text-center">
-      <a routerLink="/auth/register" class="text-blue-600 font-bold no-underline cursor-pointer hover:underline">
-        ¿No tienes cuenta? Regístrate aquí
-      </a>
+    <div class="mt-5 text-center separator pt-4">
+      <span class="text-600">¿Aún no tienes cuenta?</span>
+      <p-button label="Regístrate aquí" [link]="true" routerLink="/auth/register"
+        styleClass="font-bold text-blue-600 p-0 ml-2"></p-button>
     </div>
 
   </div>

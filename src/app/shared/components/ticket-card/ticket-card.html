@@ -1,27 +1,27 @@
 <div class="card p-3 shadow-1 border-round-lg bg-white cursor-pointer hover:bg-secondary-100 border-left-3 h-full flex flex-column transition-all transition-duration-200"
     [ngClass]="{
-       'border-yellow-500': ticket.status === TicketStatus.PENDIENTE,
-       'border-blue-400': ticket.status === TicketStatus.EN_PROGRESO,
-       'border-purple-500': ticket.status === TicketStatus.EN_REVISION,
-       'border-green-500': ticket.status === TicketStatus.FINALIZADA
+       'border-yellow-500': ticket.estado === TicketStatus.PENDIENTE,
+       'border-blue-400': ticket.estado === TicketStatus.EN_PROGRESO,
+       'border-purple-500': ticket.estado === TicketStatus.EN_REVISION,
+       'border-green-500': ticket.estado === TicketStatus.FINALIZADA
      }" (click)="onClick()">
     <div class="flex justify-content-between align-items-start mb-2">
         <div class="flex flex-column">
-            <span class="text-xxs font-mono text-indigo-500 mb-1 ticket-id-label">#{{ ticket.id.substring(0, 6)
+            <span class="text-xxs font-mono text-indigo-500 mb-1 ticket-id-label">#{{ (ticket.id || '').substring(0, 6)
                 }}</span>
-            <span class="font-bold text-sm line-height-2 text-800">{{ ticket.title }}</span>
+            <span class="font-bold text-sm line-height-2 text-800">{{ ticket.titulo }}</span>
         </div>
-        <p-tag [value]="ticket.priority" [severity]="getPrioritySeverity(ticket.priority)" styleClass="text-xs"></p-tag>
+        <p-tag [value]="ticket.prioridad" [severity]="getPrioritySeverity(ticket.prioridad)" styleClass="text-xs"></p-tag>
     </div>
-    <p class="text-xs text-500 line-clamp-2 mb-3 flex-grow-1 m-0">{{ ticket.description }}</p>
+    <p class="text-xs text-500 line-clamp-2 mb-3 flex-grow-1 m-0">{{ ticket.descripcion }}</p>
     <div class="flex justify-content-between align-items-center mt-auto pt-2 border-top-1 border-50">
         <div class="flex align-items-center gap-1 text-xs text-600 bg-gray-100 px-2 py-1 border-round">
             <i class="pi pi-user" style="font-size: 0.7rem"></i>
-            <span class="truncate max-w-5rem">{{ ticket.assignedTo }}</span>
+            <span class="truncate max-w-7rem">{{ ticket.asignado?.nombre_completo || ticket.asignado?.username || (ticket.asignado_id || '').substring(0, 8) }}</span>
         </div>
         <div class="flex align-items-center gap-1 text-xs font-medium text-gray-500">
             <i class="pi pi-calendar" style="font-size: 0.7rem"></i>
-            <span>{{ ticket.dueDate | date:'dd/MM' }}</span>
+            <span>{{ ticket.fecha_termino | date:'dd/MM' }}</span>
         </div>
     </div>
 </div>

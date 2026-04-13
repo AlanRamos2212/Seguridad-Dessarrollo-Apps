@@ -107,12 +107,22 @@
     color: #1e293b;
 }
 
-/* Modal Emerald Theme */
-:host ::ng-deep .emerald-modal .p-dialog-header {
-    background: #061a2a;
-    border-bottom: 3px solid #10b9b0;
-    padding: 1.5rem 2rem;
-    color: white;
+/* --- PREMIUM MODAL STYLE (MIDNIGHT BLUE) --- */
+:host ::ng-deep .custom-profile-modal .p-dialog-header,
+:host ::ng-deep .custom-profile-modal .p-dialog-content {
+    background-color: #04294fc8 !important;
+    backdrop-filter: blur(12px);
+    color: #ffffff !important;
+    border: none !important;
+}
+
+:host ::ng-deep .custom-profile-modal .p-dialog-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 1.5rem 2rem !important;
+}
+
+:host ::ng-deep .custom-profile-modal .p-dialog-content {
+    padding: 2rem !important;
 }
 
 .modal-header {
@@ -122,84 +132,153 @@
 }
 
 .header-icon-wrapper {
-    background: rgba(16, 185, 176, 0.2);
-    width: 44px;
-    height: 44px;
+    background: rgba(16, 185, 129, 0.2) !important;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
 }
 
 .header-icon {
-    font-size: 1.4rem;
-    color: #10b9b0;
+    font-size: 1.5rem;
+    color: #10b981 !important;
 }
 
 .header-text h2 {
     color: white;
     font-size: 1.25rem;
+    margin: 0;
 }
 
 .header-text p {
-    color: #06eac4 !important;
-    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin: 0;
+    font-size: 0.85rem;
 }
 
-:host ::ng-deep .emerald-modal .p-dialog-content {
-    padding: 2.5rem;
-    background: #ffffff;
-}
-
+/* Form Styles */
 .input-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
 }
 
 .input-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: #064e3b;
+    
+    color: #ebeeee;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .custom-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 10px !important;
     padding: 0.75rem 1rem !important;
-    border-radius: 8px !important;
-    border: 1px solid #00ffd0 !important;
-    background: #15212c !important;
-    color: #ffffff !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.3s ease !important;
 }
 
 .custom-input:focus {
-    background: #092947 !important;
-    border-color: #0084ff !important;
-    box-shadow: 0 0 0 4px rgba(16, 185, 176, 0.1) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #00f2ff !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2) !important;
     outline: none !important;
 }
 
-/* Icons inside inputs */
-:host ::ng-deep .p-input-icon-left>i {
-    color: #0044ff;
-    left: 0.85rem;
+.custom-input::placeholder {
+    color: rgba(255, 255, 255, 0.3) !important;
 }
 
-:host ::ng-deep .p-input-icon-left>.custom-input {
+/* Buttons */
+.p-button-emerald2 {
+    background: #00f2ff !important;
+    border: none !important;
+    color: #04294f !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+}
+
+.p-button-emerald2:hover {
+    background: #00d7e3 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 242, 255, 0.3) !important;
+}
+
+.p-button-emerald2:disabled {
+    opacity: 0.5 !important;
+    background: #64748b !important;
+    transform: none !important;
+}
+
+/* Icons inside inputs */
+:host ::ng-deep .p-input-icon-left > i {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+:host ::ng-deep .p-input-icon-left > .custom-input {
     padding-left: 2.75rem !important;
 }
 
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 1rem;
+/* --- TICKET DETAIL MODAL (HYBRID THEME: DARK HEADER, WHITE CONTENT) --- */
+:host ::ng-deep .custom-modal .p-dialog-header {
+    background: #061a2a !important;
+    border-bottom: 2px solid #10b9b0 !important;
+    padding: 1.25rem 2rem !important;
+    color: white !important;
+    border-top-left-radius: 1.5rem !important;
+    border-top-right-radius: 1.5rem !important;
 }
 
-:host ::ng-deep .btn-save .p-button {
-    background: #10b9b0 !important;
-    border: none !important;
+:host ::ng-deep .custom-modal .p-dialog-content {
+    padding: 1.5rem 2rem !important;
+    background: #ffffff !important;
+    border-bottom-left-radius: 1.5rem !important;
+    border-bottom-right-radius: 1.5rem !important;
+}
+
+/* Modal Typography */
+.detail-title {
+    color: #0f172a !important; /* Dark Slate */
+    font-weight: 800 !important;
+}
+
+.detail-description {
+    color: #334155 !important;
+}
+
+.detail-label-secondary {
+    color: #475569 !important; /* Muted Slate */
+    font-weight: 700 !important;
+}
+
+.detail-value {
+    color: #1e293b !important; /* Near Black */
+    font-weight: 600 !important;
+}
+
+.comment-title {
+    color: #0f172a !important;
+}
+
+:host ::ng-deep .custom-modal .p-dialog-content .p-inputtext {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+:host ::ng-deep .custom-modal .p-dialog-content .p-inputtext:focus {
+    border-color: #10b9b0 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 176, 0.1) !important;
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 94, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 94, 0); }
 }

@@ -1,6 +1,6 @@
 /* Sidebar Emerald Security Theme */
 :host ::ng-deep .custom-sidebar {
-    background: rgba(6, 26, 42, 0.95) !important;
+    background: rgba(10, 70, 119, 0.95) !important;
     /* #061a2a with transparency */
     backdrop-filter: blur(12px);
     border-right: 1px solid rgba(16, 185, 176, 0.2) !important;

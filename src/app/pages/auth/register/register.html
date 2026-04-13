@@ -1,128 +1,140 @@
-<p-toast></p-toast>
+<div class="login-background min-h-screen flex align-items-center justify-content-center p-4">
+  <p-toast></p-toast>
 
-<div class="flex align-items-center justify-content-center min-h-screen bg-blue-50 p-4">
-  <div class="card p-5 shadow-8 border-round-2xl bg-white w-full" style="max-width: 700px;">
-    
+  <div class="login-card p-5 border-round-3xl shadow-8 w-full transition-all transition-duration-300"
+    style="max-width: 650px; background: rgba(24, 45, 107, 0.9);">
+
     <div class="text-center mb-5">
-      <h2 class="text-blue-900 text-3xl font-bold mb-2">Crear Cuenta</h2>
+      <div class="inline-flex align-items-center justify-content-center bg-blue-50 border-round-xl p-3 mb-3">
+        <i class="pi pi-user-plus text-4xl text-blue-600"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-900 m-0">Únete a la Red</h1>
+      <p class="text-600 mt-2">Crea tu cuenta de seguridad avanzada</p>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-fluid grid">
-      
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('usuario')?.invalid && registerForm.get('usuario')?.touched">Usuario</label>
-        <p-iconfield iconPosition="left" class="w-full">
-          <p-inputicon class="pi pi-user"></p-inputicon>
-          <input pInputText formControlName="usuario" placeholder="Ej. alanp" class="w-full"
-                 [class.ng-invalid]="registerForm.get('usuario')?.invalid && registerForm.get('usuario')?.touched" />
-        </p-iconfield>
-        <small class="p-error block mt-1" *ngIf="registerForm.get('usuario')?.invalid && registerForm.get('usuario')?.touched">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="grid">
+      <!-- Usuario y Email -->
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <input pInputText id="usuario" formControlName="usuario" class="w-full border-round-xl p-3" />
+          <label for="usuario">Nombre de Usuario</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('usuario')?.touched && registerForm.get('usuario')?.errors?.['required']">
+          El usuario es obligatorio.
+        </small>
+        <small class="error-text"
+          *ngIf="registerForm.get('usuario')?.touched && registerForm.get('usuario')?.errors?.['minlength']">
           Mínimo 4 caracteres.
         </small>
       </div>
 
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">Email</label>
-        <p-iconfield iconPosition="left" class="w-full">
-          <p-inputicon class="pi pi-envelope"></p-inputicon>
-          <input pInputText formControlName="email" placeholder="correo@ejemplo.com" class="w-full"
-                 [class.ng-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" />
-        </p-iconfield>
-        <small class="p-error block mt-1" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-          Email inválido.
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <input pInputText id="email" formControlName="email" type="email" class="w-full border-round-xl p-3" />
+          <label for="email">Correo Electrónico</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']">
+          El email es obligatorio.
+        </small>
+        <small class="error-text"
+          *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']">
+          Formato de email inválido.
         </small>
       </div>
 
-      <div class="field col-12">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched">Nombre Completo</label>
-        <input pInputText formControlName="nombre" placeholder="Juan Pérez" class="w-full"
-               [class.ng-invalid]="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" />
-        <small class="p-error block mt-1" *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched">
-          El nombre es requerido.
+      <!-- Nombre Completo y Teléfono -->
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <input pInputText id="nombre" formControlName="nombre" class="w-full border-round-xl p-3" />
+          <label for="nombre">Nombre Completo</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.errors?.['required']">
+          El nombre es obligatorio.
         </small>
       </div>
 
-      <div class="field col-12">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('direccion')?.invalid && registerForm.get('direccion')?.touched">Dirección</label>
-        <input pInputText formControlName="direccion" placeholder="Av. Siempre Viva 123" class="w-full"
-               [class.ng-invalid]="registerForm.get('direccion')?.invalid && registerForm.get('direccion')?.touched" />
-        <small class="p-error block mt-1" *ngIf="registerForm.get('direccion')?.invalid && registerForm.get('direccion')?.touched">
-          La dirección es requerida.
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <input pInputText id="telefono" formControlName="telefono" class="w-full border-round-xl p-3" />
+          <label for="telefono">Teléfono (10 dígitos)</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('telefono')?.touched && (registerForm.get('telefono')?.errors?.['required'] || registerForm.get('telefono')?.errors?.['pattern'])">
+          Ingresa un teléfono válido de 10 dígitos.
         </small>
       </div>
 
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched">Teléfono</label>
-        <input pInputText formControlName="telefono" placeholder="10 dígitos" class="w-full"
-               [class.ng-invalid]="registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched" />
-        <small class="p-error block mt-1" *ngIf="registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched">
-          Debe contener exactamente 10 números.
+      <!-- Dirección y Fecha de Nacimiento -->
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <input pInputText id="direccion" formControlName="direccion" class="w-full border-round-xl p-3" />
+          <label for="direccion">Dirección Personal</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('direccion')?.touched && registerForm.get('direccion')?.errors?.['required']">
+          La dirección es obligatoria.
         </small>
       </div>
 
-<div class="field col-12 md:col-6">
-  <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched">
-    Fecha de Nacimiento
-  </label>
-
-  <p-iconfield iconPosition="right">
-    <p-inputicon class="pi pi-calendar"></p-inputicon>
-    <input 
-      pInputText 
-      type="date" 
-      formControlName="fechaNacimiento" 
-      class="w-full"
-      [class.ng-invalid]="registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched" />
-  </p-iconfield>
-
-  <small class="p-error block mt-1" *ngIf="registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched">
-    Debes ser mayor de 18 años.
-  </small>
-</div>
-
-
-      
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">Contraseña</label>
-        <p-password formControlName="password" 
-                    [toggleMask]="true" 
-                    [feedback]="false" 
-                    placeholder="Mín. 6 caracteres"
-                    [style]="{'width':'100%'}"
-                    [inputStyle]="{'width':'100%'}"
-                    [class.ng-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-        </p-password>
-        <small class="p-error block mt-1" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">Mín. 6 caracteres y un símbolo.</small>
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <p-datepicker id="fechaNacimiento" formControlName="fechaNacimiento" [showIcon]="true" appendTo="body"
+            styleClass="w-full" inputStyleClass="w-full border-round-xl p-3" [fluid]="true"></p-datepicker>
+          <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('fechaNacimiento')?.touched && registerForm.get('fechaNacimiento')?.errors?.['required']">
+          La fecha es obligatoria.
+        </small>
+        <small class="error-text"
+          *ngIf="registerForm.get('fechaNacimiento')?.touched && registerForm.get('fechaNacimiento')?.errors?.['menorDeEdad']">
+          Debes ser mayor de 18 años.
+        </small>
       </div>
 
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold block mb-2" [class.text-red-500]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">Confirmar Contraseña</label>
-        <p-password formControlName="confirmPassword" 
-                    [toggleMask]="true" 
-                    [feedback]="false" 
-                    placeholder="Repite contraseña"
-                    [style]="{'width':'100%'}"
-                    [inputStyle]="{'width':'100%'}"
-                    [class.ng-invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
-        </p-password>
-        <small class="p-error block mt-1" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">Las contraseñas no coinciden.</small>
+      <!-- Contraseñas -->
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <p-password formControlName="password" [toggleMask]="true" [feedback]="true" styleClass="w-full"
+            inputStyleClass="w-full border-round-xl p-3" [fluid]="true">
+          </p-password>
+          <label for="password">Contraseña</label>
+        </p-iftalabel>
+        <small class="error-text"
+          *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']">
+          Contraseña obligatoria.
+        </small>
+        <small class="error-text"
+          *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
+          Mínimo 6 caracteres.
+        </small>
       </div>
 
-
-
-
+      <div class="col-12 md:col-6 field">
+        <p-iftalabel>
+          <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false" styleClass="w-full"
+            inputStyleClass="w-full border-round-xl p-3" [fluid]="true">
+          </p-password>
+          <label for="confirmPassword">Confirmar Contraseña</label>
+        </p-iftalabel>
+        <small class="error-text" *ngIf="registerForm.dirty && registerForm.errors?.['mismatch']">
+          Las contraseñas no coinciden.
+        </small>
+      </div>
 
       <div class="col-12 mt-4">
-        <button pButton pRipple label="Finalizar Registro" type="submit" class="w-full py-3 font-bold bg-blue-600 shadow-3"></button>
-      </div>
+        <p-button label="Crear Cuenta de Seguridad" icon="pi pi-check"
+          styleClass="w-full py-3 border-round-xl font-bold" [raised]="true" type="submit"></p-button>
 
+        <div class="text-center mt-4">
+          <span class="text-600">¿Ya tienes cuenta? </span>
+          <a routerLink="/auth/login" class="text-blue-600 font-bold no-underline hover:underline">Inicia sesión
+            aquí</a>
+        </div>
+      </div>
     </form>
-    
-    <div class="mt-4 text-center">
-      <a routerLink="/auth/login" class="text-blue-600 font-bold no-underline hover:underline cursor-pointer">
-        ¿Ya tienes cuenta? Inicia sesión
-      </a>
-    </div>
-    
   </div>
 </div>

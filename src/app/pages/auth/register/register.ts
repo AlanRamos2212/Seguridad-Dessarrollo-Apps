@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -11,9 +11,11 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { PasswordModule } from 'primeng/password'; // IMPORTANTE PARA EL OJO
+import { PasswordModule } from 'primeng/password';
+import { DatePickerModule } from 'primeng/datepicker';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { MessageService } from 'primeng/api';
-
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +31,9 @@ import { MessageService } from 'primeng/api';
     ToastModule,
     IconFieldModule,
     InputIconModule,
-    PasswordModule // AGREGADO AQUÍ
+    PasswordModule,
+    DatePickerModule,
+    IftaLabelModule
   ],
   providers: [MessageService],
   templateUrl: './register.html',
@@ -37,92 +41,94 @@ import { MessageService } from 'primeng/api';
 })
 export class RegisterComponent {
   registerForm!: FormGroup;
+  private authService = inject(AuthService);
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private messageService: MessageService,
     private router: Router
   ) {
     this.initForm();
   }
 
-private initForm() {
-  this.registerForm = this.fb.group({
-    usuario: ['', [Validators.required, Validators.minLength(4)]],
-    email: ['', [Validators.required, Validators.email]],
-    nombre: ['', Validators.required],
-    direccion: ['', Validators.required],
-    telefono: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-    // PASSWORD SIMPLIFICADO: Solo 6 caracteres mínimos, sin símbolos obligatorios
-    password: ['', [Validators.required, Validators.minLength(6)]], 
-    confirmPassword: ['', Validators.required],
-    fechaNacimiento: ['', [Validators.required, this.validarMayoriaEdad]]
-  }, { validators: this.passwordMatchValidator });
-}
+  private initForm() {
+    this.registerForm = this.fb.group({
+      usuario: ['', [Validators.required, Validators.minLength(4)]],
+      email: ['', [Validators.required, Validators.email]],
+      nombre: ['', Validators.required],
+      direccion: ['', Validators.required],
+      telefono: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+      fechaNacimiento: ['', [Validators.required, this.validarMayoriaEdad]]
+    }, { validators: this.passwordMatchValidator });
+  }
 
-  // Validador personalizado para mayoría de edad
   validarMayoriaEdad(control: AbstractControl) {
     if (!control.value) return null;
     const fechaNac = new Date(control.value);
     const hoy = new Date();
     let edad = hoy.getFullYear() - fechaNac.getFullYear();
     const mes = hoy.getMonth() - fechaNac.getMonth();
-    
-    // Ajuste si aún no ha pasado su cumpleaños este año
+
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
       edad--;
     }
-    
+
     return edad >= 18 ? null : { menorDeEdad: true };
   }
 
-  // Validador para asegurar que las contraseñas coincidan
   passwordMatchValidator(control: AbstractControl) {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
-    
-    return password && confirmPassword && password.value === confirmPassword.value 
+
+    return password && confirmPassword && password.value === confirmPassword.value
       ? null : { mismatch: true };
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.registerForm.invalid) {
-        this.registerForm.markAllAsTouched();
-        this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Formulario Inválido', 
-            detail: 'Por favor, rellena los campos marcados en rojo correctamente.' 
-        });
-        return;
+      this.registerForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Formulario Inválido',
+        detail: 'Por favor, rellena los campos correctamente.'
+      });
+      return;
     }
 
-    // Extraer todos los datos del formulario
-    const {
-        email, password, nombre, direccion, telefono, fechaNacimiento
-    } = this.registerForm.value;
+    const { email, password, nombre, direccion, telefono, fechaNacimiento, usuario } = this.registerForm.value;
 
-    const userSession = {
-        email: email,
-        password: password,
-        name: nombre,
-        direccion: direccion,
-        telefono: telefono,
-        fechaNacimiento: fechaNacimiento,
-        miembroDesde: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })
-    };
+    try {
+      // Registrar usando nuestro nuevo AuthService (Gateway)
+      const response = await this.authService.register({
+        email,
+        password,
+        nombre_completo: nombre, // Ajustado al nombre de campo del backend
+        username: usuario,       // Ajustado al nombre de campo del backend
+        direccion,
+        telefono,
+        fecha_nacimiento: fechaNacimiento // Ajustado al nombre de campo del backend
+      });
 
-    // Guardar en LocalStorage
-    localStorage.setItem('user_session', JSON.stringify(userSession));
+      if (response.statusCode === 201) {
+        this.messageService.add({
+          severity: 'success',
+          summary: '¡Cuenta Creada!',
+          detail: 'Tu cuenta ha sido registrada con éxito. Ya puedes iniciar sesión.'
+        });
 
-    this.messageService.add({ 
-        severity: 'success', 
-        summary: '¡Éxito!', 
-        detail: 'Tu cuenta ha sido creada y guardada localmente.' 
-    });
-
-    // Redirección al Login después de 2 segundos
-    setTimeout(() => {
-        this.router.navigate(['/auth/login']);
-    }, 2000);
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']);
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error('Error en Registro:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error al Registrar',
+        detail: error.error?.data?.[0]?.message || 'No se pudo crear la cuenta. Inténtalo de nuevo.'
+      });
+    }
   }
-}
+}

@@ -12,13 +12,18 @@ export const AuthGuard: CanActivateFn = () => {
   }
 
   // Ahora sí es seguro usar localStorage porque estamos en el cliente
+  // Verificamos tanto la sesión de usuario como el token JWT
   const session = localStorage.getItem('user_session');
+  const token = localStorage.getItem('supabase_token');
 
-  if (session) {
+  if (session && token) {
     return true;
   }
 
-  // Si no hay sesión, al login
+  // Si falta algo, al login y limpiamos por seguridad
+  localStorage.removeItem('user_session');
+  localStorage.removeItem('supabase_token');
+
   router.navigate(['/auth/login']);
   return false;
 };

@@ -20,69 +20,71 @@
 
   <!-- Header Actions -->
   <div class="flex justify-content-between align-items-center mb-4">
-    <h2 class="text-900 font-bold m-0">Gestión de Grupos</h2>
-    <p-button label="Agregar Grupo" icon="pi pi-plus" class="p-button-raised p-button-primary"
+    <h2 class="text-900 font-bold m-0 text-navy">Gestión de Grupos</h2>
+    <p-button *appHasPermission="'group:add'" label="Agregar Grupo" icon="pi pi-plus" class="p-button-raised p-button-primary"
       (onClick)="openModal(false)">
     </p-button>
   </div>
 
   <!-- Table Section -->
   <div class="table-container">
-    <table class="custom-table">
-      <thead>
+    <table class="custom-table border-round-2xl overflow-hidden shadow-2">
+      <thead class="bg-gray-800 text-white">
         <tr>
-          <th>Nombre del Grupo</th>
-          <th>Nivel</th>
+          <th class="p-4">Nombre del Grupo</th>
           <th>Descripción</th>
-          <th>Responsable</th>
+          <th>ID Creador</th>
           <th>Integrantes</th>
           <th class="text-center">Tickets</th>
           <th class="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let grupo of grupos(); let i = index">
-          <td>
-            <span class="group-name">{{ grupo.name }}</span>
+        <tr *ngFor="let grupo of grupos(); let i = index" class="hover:bg-gray-50 transition-colors">
+          <td class="p-4">
+            <span class="group-name font-bold text-navy">{{ grupo.nombre }}</span>
           </td>
           <td>
-            <p-tag [value]="'Nivel ' + grupo.level"
-              [severity]="grupo.level > 2 ? 'danger' : (grupo.level > 1 ? 'warn' : 'info')" [rounded]="true"></p-tag>
-          </td>
-          <td>
-            <div class="description-text" [title]="grupo.description">{{ grupo.description }}</div>
+            <div class="description-text text-navy-muted" [title]="grupo.descripcion">{{ grupo.descripcion }}</div>
           </td>
           <td>
             <div class="author-cell">
               <i class="pi pi-user text-400"></i>
-              <span class="author-name">{{ grupo.responsible }}</span>
+              <span class="author-name font-medium text-xs">{{ grupo.creador_id }}</span>
             </div>
           </td>
           <td>
             <div class="flex flex-wrap gap-1">
-              <p-tag *ngFor="let member of grupo.members" [value]="member" severity="secondary" [rounded]="true"
-                styleClass="text-xs"></p-tag>
+               <p-badge [value]="(grupo.usuarios_grupos?.length || 0).toString()" severity="info"></p-badge>
+               <span class="text-xs text-500">Miembros</span>
             </div>
           </td>
           <td class="text-center">
-            <p-badge [value]="(grupo.tickets || 0).toString()"
-              [severity]="(grupo.tickets || 0) > 25 ? 'danger' : 'success'"></p-badge>
+            <div class="cursor-pointer hover:scale-110 transition-transform" (click)="goToDashboard(grupo.id)"
+              pTooltip="Ver en Dashboard">
+              <p-badge [value]="getTicketsCount(grupo.id).toString()"
+                [severity]="getTicketsCount(grupo.id) > 10 ? 'danger' : 'success'" styleClass="text-lg p-3"></p-badge>
+            </div>
           </td>
           <td class="text-center">
             <div class="flex justify-content-center gap-1">
-              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
+              <p-button icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="goToDashboard(grupo.id)" pTooltip="Dashboard"></p-button>
+              <p-button *appHasPermission="'group:edit'" icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info"
                 (onClick)="openModal(true, i)" pTooltip="Editar">
               </p-button>
-              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deleteGroup(i)"
-                pTooltip="Eliminar">
+              <p-button *appHasPermission="'group:edit'" icon="pi pi-shield" [rounded]="true" [text]="true" severity="help"
+                (onClick)="openRoleModal(grupo)" pTooltip="Gestionar Permisos">
+              </p-button>
+              <p-button *appHasPermission="'group:delete'" icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                (onClick)="deleteGroup(i)" pTooltip="Eliminar">
               </p-button>
             </div>
           </td>
         </tr>
         <tr *ngIf="grupos().length === 0">
-          <td colspan="7" class="p-8 text-center">
+          <td colspan="6" class="p-8 text-center bg-gray-50">
             <i class="pi pi-folder-open text-400 text-5xl mb-3"></i>
-            <p class="text-500 font-medium">No se encontraron grupos registrados.</p>
+            <p class="text-navy font-bold">No se encontraron grupos registrados.</p>
           </td>
         </tr>
       </tbody>
@@ -108,47 +110,17 @@
   <form [formGroup]="groupForm" (ngSubmit)="saveGroup()" class="form-grid mt-2">
 
     <div class="input-wrapper">
-      <label for="name" class="input-label">Nombre del Proyecto / Grupo</label>
+      <label for="nombre" class="input-label">Nombre del Proyecto / Grupo</label>
       <div class="p-input-icon-left">
         <i class="pi pi-briefcase"></i>
-        <input id="name" type="text" pInputText formControlName="name" class="custom-input w-full"
+        <input id="nombre" type="text" pInputText formControlName="nombre" class="custom-input w-full"
           placeholder="Ej: Análisis de Riesgos 2024" />
       </div>
     </div>
 
-    <div class="grid">
-      <div class="col-6">
-        <div class="input-wrapper">
-          <label for="level" class="input-label">Nivel</label>
-          <p-inputNumber id="level" formControlName="level" [showButtons]="true" buttonLayout="horizontal"
-            spinnerMode="horizontal" inputStyleClass="custom-input w-full text-center"
-            decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
-            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" [min]="1">
-          </p-inputNumber>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="input-wrapper">
-          <label for="responsible" class="input-label">Responsable</label>
-          <input id="responsible" type="text" pInputText formControlName="responsible" class="custom-input w-full"
-            placeholder="Nombre" />
-        </div>
-      </div>
-    </div>
-
     <div class="input-wrapper">
-      <label for="members" class="input-label">Integrantes del Equipo</label>
-      <span class="p-input-icon-left">
-        <i class="pi pi-users"></i>
-        <input id="members" type="text" pInputText formControlName="members" placeholder="Juan Pérez, Maria López..."
-          class="custom-input w-full" />
-      </span>
-      <small class="text-500 italic">Separa los nombres con comas.</small>
-    </div>
-
-    <div class="input-wrapper">
-      <label for="description" class="input-label">Descripción Detallada</label>
-      <textarea id="description" rows="4" formControlName="description"
+      <label for="descripcion" class="input-label">Descripción Detallada</label>
+      <textarea id="descripcion" rows="4" formControlName="descripcion"
         class="p-inputtext custom-input w-full resize-none"
         placeholder="Describe el propósito y alcance de este grupo...">
       </textarea>
@@ -162,4 +134,59 @@
     </div>
 
   </form>
+</p-dialog>
+
+<!-- Modal de Configuración de Permisos (Roles) -->
+<p-dialog [(visible)]="displayRoleModal" [modal]="true" [style]="{ width: '500px'}" [draggable]="false"
+    [resizable]="false" styleClass="custom-role-modal shadow-8 border-round-xl overflow-hidden" [style]="{'background-color': '#0c4d8d9e'}">
+    
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-3">
+            <i class="pi pi-shield text-cyan-400" style="font-size: 1.5rem"></i>
+            <div class="flex flex-column">
+                <span class="font-bold text-xl text-white">Configurar Permisos del Grupo</span>
+                <span class="text-xs text-white-alpha-70" *ngIf="selectedGroup">Grupo: {{ selectedGroup.nombre }}</span>
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="p-3">
+        <p class="text-white-alpha-80 mb-4 text-sm">Selecciona las capacidades que este grupo tendrá sobre el sistema:</p>
+
+        <!-- Search Bar -->
+        <span class="p-input-icon-left w-full mb-3 block">
+            <i class="pi pi-search ml-2"></i>
+            <input pInputText type="text" [(ngModel)]="permissionSearchTerm" placeholder="Buscar permiso..." class="w-full bg-white-alpha-10 text-white border-round-lg border-1 border-white-alpha-20" style="padding-left: 2.5rem;" />
+        </span>
+
+        <!-- Collector of selected permissions (Chips) -->
+        <div class="mb-3 flex flex-wrap gap-2 max-h-5rem overflow-y-auto" *ngIf="groupPermissions().length > 0">
+            <p-chip *ngFor="let permId of groupPermissions()" [label]="getPermissionName(permId)" [removable]="true" (onRemove)="removePermission(permId)" styleClass="bg-blue-50 text-blue-900 text-xs border-round-xl py-1 px-2 mb-1 shadow-1 font-semibold"></p-chip>
+        </div>
+        
+        <div class="flex flex-column gap-3 max-h-20rem overflow-y-auto pr-2 custom-scroll">
+            <div *ngFor="let perm of filteredPermissions" 
+                 class="flex align-items-start gap-3 p-3 border-round-lg transition-all hover:bg-white-alpha-10 border-1 border-white-alpha-10">
+                <p-checkbox name="group-perms" [value]="perm.id" [ngModel]="groupPermissions()" 
+                    (ngModelChange)="groupPermissions.set($any($event))" [inputId]="perm.id"></p-checkbox>
+                
+                <label [for]="perm.id" class="cursor-pointer flex flex-column gap-1 flex-1">
+                    <span class="font-bold text-sm text-white">{{ perm.nombre }}</span>
+                    <span class="text-xs" style="color: #c2ff47">{{ perm.descripcion }}</span>
+                </label>
+            </div>
+
+            <div *ngIf="filteredPermissions.length === 0" class="text-center p-4">
+                <i class="pi pi-inbox text-500 text-3xl mb-2"></i>
+                <p class="text-500 m-0">No se encontraron permisos.</p>
+            </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-top-1 border-white-alpha-10 flex justify-content-end gap-2">
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" styleClass="p-button-secondary text-white-alpha-60" 
+                (onClick)="displayRoleModal = false"></p-button>
+            <p-button label="Guardar Cambios" icon="pi pi-save" (onClick)="saveRolePermissions()" 
+                [loading]="loading()" styleClass="p-button-cyan border-round-lg shadow-4"></p-button>
+        </div>
+    </div>
 </p-dialog>

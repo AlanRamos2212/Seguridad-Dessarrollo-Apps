@@ -1,20 +1,26 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 // Importaciones de PrimeNG
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
+import Lara from '@primeng/themes/lara';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),
+    provideHttpClient(
+      withInterceptors([authInterceptor]),
+      withFetch()
+    ),
     providePrimeNG({
       theme: {
-        preset: Aura // Esto define el look & feel de tus inputs y botones
+        preset: Lara // Lara es azul por defecto, eliminando el verde de Aura
       }
     })
   ]

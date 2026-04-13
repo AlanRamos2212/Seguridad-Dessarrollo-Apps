@@ -1,0 +1,64 @@
+.login-background {
+    background: radial-gradient(circle at top right, #eef2ff, #dbeafe);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-background::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    top: -100px;
+    right: -100px;
+    z-index: 0;
+}
+
+.login-card {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-input {
+    transition: all 0.2s;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-login:hover {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+}
+
+.separator {
+    border-top: 1px solid #f1f5f9;
+}
+
+/* Specific PrimeNG Overrides for IftaLabel */
+:host ::ng-deep .p-iftalabel label {
+    color: #64748b !important;
+    font-weight: 500;
+}
+
+:host ::ng-deep .p-iftalabel input:focus+label {
+    color: #3b82f6 !important;
+}
+
+/* Password Toggle Icon positioning */
+:host ::ng-deep .p-password-toggle-mask-icon {
+    right: 1rem !important;
+    color: #64748b;
+}

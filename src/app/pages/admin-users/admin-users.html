@@ -1,0 +1,146 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="page-container p-4 fadein animation-duration-500">
+    <!-- HEADER SECTION -->
+    <div class="flex flex-column md:flex-row justify-content-between align-items-center mb-5 gap-3">
+        <div>
+            <h1 class="text-4xl font-bold text-900 m-0 flex align-items-center gap-2">
+                <i class="pi pi-users text-blue-600 text-4xl"></i> Usuarios del Sistema
+            </h1>
+            <p class="text-600 mt-2 mb-0">Administración de identidades, perfiles y pertenencia a grupos.</p>
+        </div>
+        <div class="flex gap-2">
+            <p-button label="Nuevo Usuario" icon="pi pi-user-plus" (onClick)="openUserModal()"
+                styleClass="p-button-raised border-round-xl shadow-4"></p-button>
+        </div>
+    </div>
+
+    <!-- MAIN TABLE -->
+    <div class="card shadow-4 border-round-2xl overflow-hidden surface-card border-none">
+        <p-table [value]="managedUsers()" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+            styleClass="p-datatable-sm p-datatable-striped" [loading]="loading()"
+            [globalFilterFields]="['nombre_completo', 'email', 'username']" #dt>
+            
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="nombre_completo">Empleado <p-sortIcon field="nombre_completo"></p-sortIcon></th>
+                    <th>Contacto</th>
+                    <th>Grupos / Roles</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-user>
+                <tr>
+                    <td>
+                        <div class="flex align-items-center gap-3">
+                            <div class="avatar-circle">
+                                {{ user.nombre_completo.substring(0,2).toUpperCase() }}
+                            </div>
+                            <div class="flex flex-column">
+                                <span class="font-bold text-900">{{ user.nombre_completo }}</span>
+                                <span class="text-xs text-500">@{{ user.username }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-column gap-1">
+                            <span class="text-sm"><i class="pi pi-envelope text-blue-500 mr-2"></i>{{ user.email }}</span>
+                            <span class="text-sm"><i class="pi pi-phone text-green-500 mr-2"></i>{{ user.telefono || 'Sin tel.' }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-wrap gap-1">
+                            <p-chip *ngFor="let g of user.grupos" [label]="g" [removable]="true" (onRemove)="removeGroupFromUser(user, g)" 
+                                styleClass="bg-blue-50 text-blue-800 border-1 border-blue-200 text-xs px-2 py-1 border-round-xl cursor-pointer hover:bg-blue-100 transition-colors"></p-chip>
+                            <span *ngIf="!user.grupos?.length" class="text-400 italic text-xs">Sin grupos</span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <p-tag severity="success" value="Activo" [rounded]="true"></p-tag>
+                    </td>
+                    <td class="text-center">
+                        <div class="flex justify-content-center gap-1">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info"
+                                (onClick)="openUserModal(user)" pTooltip="Editar grupos/datos"></p-button>
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                (onClick)="deleteUserCrud(user)" pTooltip="Eliminar permanentemente"></p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="p-5 text-center text-500">No se encontraron colaboradores.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- MODAL: CREATE / EDIT USER -->
+<p-dialog [(visible)]="displayUserModal" [modal]="true" [style]="{ width: '600px'}" [draggable]="false"
+    [resizable]="false" styleClass="custom-modal border-round-2xl shadow-8">
+    
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-3 py-2">
+            <i [class]="isEditingUser ? 'pi pi-user-edit text-blue-600' : 'pi pi-user-plus text-green-600'" 
+               style="font-size: 2rem"></i>
+            <div>
+                <h3 class="m-0 text-xl font-bold">{{ isEditingUser ? 'Actualizar Ficha de Empleado' : 'Contratar Nuevo Integrante' }}</h3>
+                <p class="m-0 text-500 text-sm">Define el acceso inicial al ecosistema ERP.</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="userCrudForm" (ngSubmit)="saveUserCrud()" class="flex flex-column gap-3 mt-3">
+        <div class="grid p-fluid">
+            <!-- PERSONAL DATA -->
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Nombre Completo</label>
+                <input pInputText formControlName="nombre_completo" placeholder="Ej. Juan Pérez" class="surface-50 border-round-lg" />
+            </div>
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Nombre de Usuario</label>
+                <input pInputText formControlName="username" placeholder="jperez_sys" class="surface-50 border-round-lg" />
+            </div>
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Correo Electrónico</label>
+                <input pInputText formControlName="email" placeholder="email@institución.com" class="surface-50 border-round-lg" />
+            </div>
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Contraseña</label>
+                <input pInputText type="password" formControlName="password" placeholder="••••••••" class="surface-50 border-round-lg" />
+                <small *ngIf="isEditingUser" class="text-blue-500 italic">Vacio para mantener, ingresa para cambiar</small>
+            </div>
+            
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Teléfono</label>
+                <input pInputText formControlName="telefono" placeholder="10 dígitos" class="surface-50 border-round-lg" />
+            </div>
+            <div class="col-12 md:col-6">
+                <label class="font-bold block mb-1">Fecha de Ingreso</label>
+                <input type="date" pInputText formControlName="fecha_inicio" class="surface-50 border-round-lg" />
+            </div>
+
+            <!-- GROUP ASSIGNMENT -->
+            <div class="col-12">
+                <label class="font-bold block mb-1">Asignar a Grupo/Role Inicial</label>
+                <p-select [options]="allGroups()" formControlName="grupo" optionLabel="nombre" optionValue="nombre"
+                   styleClass="surface-50 border-round-lg" placeholder="Seleccione un grupo" appendTo="body"></p-select>
+                <small class="text-500 mt-1 block">El usuario heredará todos los permisos definidos para este grupo.</small>
+            </div>
+        </div>
+
+        <div class="flex justify-content-end gap-2 mt-4">
+            <p-button label="Cancelar" icon="pi pi-times" [text]="true" severity="secondary" (onClick)="displayUserModal = false"></p-button>
+            <p-button [label]="isEditingUser ? 'Sincronizar Datos' : 'Registrar en Sistema'" 
+                icon="pi pi-check" type="submit" [disabled]="userCrudForm.invalid && !isEditingUser" 
+                styleClass="p-button-raised border-round-lg shadow-4"></p-button>
+        </div>
+    </form>
+</p-dialog>
+

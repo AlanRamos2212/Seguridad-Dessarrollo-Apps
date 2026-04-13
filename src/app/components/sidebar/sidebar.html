@@ -2,7 +2,7 @@
     <ng-template pTemplate="header">
         <div class="flex align-items-center gap-3 pl-2">
             <div class="header-icon-wrapper">
-                <img src="assets/lg1.png" alt="Logo" style="width: 32px" />
+                <img src="lg1.png" alt="Logo" style="width: 80px" />
             </div>
             <span class="text-xl erp-title">ERP SYSTEM</span>
         </div>
@@ -14,13 +14,22 @@
                 <span class="text-xs uppercase font-bold text-500 px-3 letter-spacing-1">Navegación</span>
             </div>
             <nav>
-                <a *ngFor="let link of sidebarLinks" [routerLink]="link.path" routerLinkActive="active-link"
+                <a *ngFor="let link of sidebarLinks()" [routerLink]="link.path" routerLinkActive="active-link"
                     [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
                     <div class="nav-indicator"></div>
                     <i [className]="link.icon + ' nav-icon'"></i>
                     <span>{{ link.name }}</span>
                 </a>
             </nav>
+        </div>
+
+        <!-- Logout -->
+        <div class="px-2 pb-2">
+            <button pButton icon="pi pi-sign-out" label="Cerrar Sesión"
+                class="w-full p-button-outlined p-button-danger border-round-xl"
+                style="background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.4); color: #f87171;"
+                (click)="logout()">
+            </button>
         </div>
 
         <div class="sidebar-footer">
