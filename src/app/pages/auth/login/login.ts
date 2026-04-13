@@ -46,6 +46,16 @@ export class LoginComponent {
     });
   }
 
+  logoClicks = 0;
+
+  onLogoClick() {
+    this.logoClicks++;
+    if (this.logoClicks === 5) {
+      alert('catch u');
+      this.logoClicks = 0; // Reset
+    }
+  }
+
   async onLogin() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

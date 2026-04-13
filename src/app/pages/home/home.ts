@@ -109,6 +109,35 @@ export class HomeComponent implements OnInit {
         };
     });
 
+    get dashboardChartData() {
+        const s = this.stats();
+        return {
+            labels: ['Pendiente', 'En Progreso', 'En Revisión', 'Finalizada'],
+            datasets: [
+                {
+                    data: [s.pendiente, s.progreso, s.revision, s.finalizada],
+                    backgroundColor: ['#eab308', '#0ea5e9', '#a855f7', '#22c55e'],
+                    hoverBackgroundColor: ['#facc15', '#38bdf8', '#c084fc', '#4ade80'],
+                    borderWidth: 0
+                }
+            ]
+        };
+    }
+
+    dashboardChartOptions = {
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    usePointStyle: true,
+                    color: '#475569',
+                    font: { weight: '500' }
+                }
+            }
+        },
+        cutout: '60%' // Convertimos a un gráfico Doughnut ligero (si se usara 'doughnut', si es 'pie' no afecta mucho pero podemos pasarle type="doughnut")
+    };
+
     viewMode = signal<'kanban' | 'list'>('kanban');
     displayTicketModal = false;
     displayDetailModal = false;
