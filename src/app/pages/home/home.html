@@ -10,35 +10,79 @@
     </div>
   </div>
 
-  <div class="grid mb-4">
-    <div class="col-12 md:col-6 lg:col-2">
-      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-blue-500">
-        <div class="text-gray-500 text-sm mb-1">Total</div>
-        <div class="text-2xl font-bold">{{ stats().total }}</div>
+  <div class="grid justify-content-center mb-5 gap-3 md:gap-0">
+    <!-- Total -->
+    <div class="col-12 sm:col-6 md:col-4 lg:col-2">
+      <div class="card p-3 border-round-lg shadow-1 bg-white hover:shadow-3 transition-colors transition-duration-300 h-full border-1 border-200" style="border-top: 4px solid var(--blue-500) !important;">
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <span class="block text-500 font-semibold mb-2 text-sm uppercase tracking-wide">Total</span>
+            <div class="text-900 font-bold text-3xl">{{ stats().total }}</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-blue-50 border-round-md" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-ticket text-blue-500 text-lg"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-12 md:col-6 lg:col-2">
-      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-yellow-500">
-        <div class="text-gray-500 text-sm mb-1">Pendiente</div>
-        <div class="text-2xl font-bold">{{ stats().pendiente }}</div>
+    
+    <!-- Pendiente -->
+    <div class="col-12 sm:col-6 md:col-4 lg:col-2">
+      <div class="card p-3 border-round-lg shadow-1 bg-white hover:shadow-3 transition-colors transition-duration-300 h-full border-1 border-200" style="border-top: 4px solid var(--yellow-500) !important;">
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <span class="block text-500 font-semibold mb-2 text-sm uppercase tracking-wide">Pendientes</span>
+            <div class="text-900 font-bold text-3xl">{{ stats().pendiente }}</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-yellow-50 border-round-md" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-clock text-yellow-500 text-lg"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-12 md:col-6 lg:col-2">
-      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-blue-400">
-        <div class="text-gray-500 text-sm mb-1">En Progreso</div>
-        <div class="text-2xl font-bold">{{ stats().progreso }}</div>
+
+    <!-- En Progreso -->
+    <div class="col-12 sm:col-6 md:col-4 lg:col-2">
+      <div class="card p-3 border-round-lg shadow-1 bg-white hover:shadow-3 transition-colors transition-duration-300 h-full border-1 border-200" style="border-top: 4px solid var(--cyan-500) !important;">
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <span class="block text-500 font-semibold mb-2 text-sm uppercase tracking-wide">Progreso</span>
+            <div class="text-900 font-bold text-3xl">{{ stats().progreso }}</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-cyan-50 border-round-md" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-spinner text-cyan-500 text-lg"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-12 md:col-6 lg:col-2">
-      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-purple-500">
-        <div class="text-gray-500 text-sm mb-1">En Revisión</div>
-        <div class="text-2xl font-bold">{{ stats().revision }}</div>
+
+    <!-- En Revisión -->
+    <div class="col-12 sm:col-6 md:col-4 lg:col-2">
+      <div class="card p-3 border-round-lg shadow-1 bg-white hover:shadow-3 transition-colors transition-duration-300 h-full border-1 border-200" style="border-top: 4px solid var(--purple-500) !important;">
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <span class="block text-500 font-semibold mb-2 text-sm uppercase tracking-wide">Revisión</span>
+            <div class="text-900 font-bold text-3xl">{{ stats().revision }}</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-purple-50 border-round-md" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-search text-purple-500 text-lg"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-12 md:col-6 lg:col-2">
-      <div class="card p-3 shadow-1 border-round-xl bg-white border-left-3 border-green-500">
-        <div class="text-gray-500 text-sm mb-1">Finalizada</div>
-        <div class="text-2xl font-bold">{{ stats().finalizada }}</div>
+
+    <!-- Finalizada -->
+    <div class="col-12 sm:col-6 md:col-4 lg:col-2">
+      <div class="card p-3 border-round-lg shadow-1 bg-white hover:shadow-3 transition-colors transition-duration-300 h-full border-1 border-200" style="border-top: 4px solid var(--green-500) !important;">
+        <div class="flex justify-content-between align-items-start">
+          <div>
+            <span class="block text-500 font-semibold mb-2 text-sm uppercase tracking-wide">Finalizada</span>
+            <div class="text-900 font-bold text-3xl">{{ stats().finalizada }}</div>
+          </div>
+          <div class="flex align-items-center justify-content-center bg-green-50 border-round-md" style="width: 2.5rem; height: 2.5rem">
+            <i class="pi pi-check text-green-500 text-lg"></i>
+          </div>
+        </div>
       </div>
     </div>
   </div>

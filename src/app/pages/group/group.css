@@ -258,6 +258,26 @@
     color: #ffffff !important;
 }
 
+/* Forzar el color "blanquito azulado" a los chips del modal */
+:host ::ng-deep .custom-role-modal .p-chip {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+:host ::ng-deep .custom-role-modal .p-chip .p-chip-remove-icon {
+    color: #0369a1 !important;
+    transition: transform 0.2s;
+}
+
+:host ::ng-deep .custom-role-modal .p-chip .p-chip-remove-icon:hover {
+    color: #0f172a !important;
+    transform: scale(1.1);
+}
+
 :host ::ng-deep .custom-role-modal .p-checkbox .p-checkbox-box {
     background: transparent !important;
     border: 2px solid #00f2ff !important;

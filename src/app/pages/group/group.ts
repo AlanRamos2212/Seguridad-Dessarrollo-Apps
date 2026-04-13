@@ -67,6 +67,14 @@ export class GroupComponent implements OnInit {
     this.groupPermissions.update(perms => perms.filter(id => id !== permId));
   }
 
+  selectAllPermissions() {
+    this.groupPermissions.set(this.allPermissions().map(p => p.id));
+  }
+
+  deselectAllPermissions() {
+    this.groupPermissions.set([]);
+  }
+
   // Data from Service
   grupos = this.ticketService.groups;
   allTickets = this.ticketService.tickets;
