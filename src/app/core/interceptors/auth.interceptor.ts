@@ -30,13 +30,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       
-      // Error 401/403: No autorizado o sesión expirada
-      if (error.status === 401 || error.status === 403) {
-        console.warn('⚠️ Acceso denegado o sesión expirada. Redirigiendo a Login...');
+      // Error 401: No autenticado o sesión expirada (Token inválido/missing)
+      if (error.status === 401) {
+        console.warn('⚠️ Sesión expirada o no válida. Redirigiendo a Login...');
         if (isPlatformBrowser(platformId)) {
           localStorage.removeItem('supabase_token');
+          localStorage.removeItem('user_session'); // Limpiar la sesión persistente también
         }
         router.navigate(['/auth/login']);
+      }
+
+      // Error 403: Prohibido (Falta de permisos)
+      if (error.status === 403) {
+        console.warn('⚠️ Acceso denegado: El usuario no tiene permisos suficientes para realizar esta acción.');
+        // No redirigimos ni borramos tokens porque la sesión sigue siendo válida.
+        // Dejamos que el controlador (componente) maneje el error y muestre un Toast.
       }
 
       // Error 429: Rate Limit excedido
